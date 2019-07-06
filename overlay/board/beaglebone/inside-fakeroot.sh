@@ -52,4 +52,4 @@ mkdir ${TARGET_DIR}/data/
 fstabFile="${TARGET_DIR}/etc/fstab"
 echo "" > $fstabFile
 
-echo "LABEL=$dataImageFsLabel /data $dataImageFsType  defaults   1 2" >> $fstabFile
+echo "LABEL=$dataImageFsLabel /data $dataImageFsType  defaults   0 1" >> $fstabFile
