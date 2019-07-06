@@ -1,0 +1,1 @@
+#source "$BR2_EXTERNAL_KRAFTWAY_PATH/package/dcerpc/Config.in"
