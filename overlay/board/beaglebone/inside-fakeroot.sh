@@ -27,7 +27,7 @@ do
     sudo umount -l $dataImageFile
 done
 
-if [ -f $dataImageFile ]; then
+if [ -f $dataImageFsystemctl start prepare.serviceile ]; then
     rm -rf $dataImageFile
 fi
 
@@ -51,5 +51,15 @@ mkdir ${TARGET_DIR}/data/
 #########################################################
 fstabFile="${TARGET_DIR}/etc/fstab"
 echo "" > $fstabFile
-
 echo "LABEL=$dataImageFsLabel /data $dataImageFsType  defaults   0 1" >> $fstabFile
+
+#########################################################
+#
+# install systemd
+#
+#########################################################
+
+cp $BR2_EXTERNAL_alexeyOverlay_PATH/board/beaglebone//systemd/*service ${TARGET_DIR}/etc/systemd/system/
+cp $BR2_EXTERNAL_alexeyOverlay_PATH/board/beaglebone//systemd/*sh ${TARGET_DIR}/usr/bin/
+chmod +x ${TARGET_DIR}/etc/systemd/system/*service
+chmod +x ${TARGET_DIR}/usr/bin/*.sh
