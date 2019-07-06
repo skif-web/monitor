@@ -1,0 +1,11 @@
+#!/bin/sh
+[Unit]
+Description=monitor prepare system
+Before=systemd-networkd.service systemd-resolved.service  mysqld.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/prepare.sh
+
+[Install]
+WantedBy=multi-user.target
