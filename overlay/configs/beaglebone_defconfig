@@ -1,6 +1,6 @@
 BR2_arm=y
 BR2_cortex_a8=y
-BR2_DL_DIR="$(BR2_EXTERNAL_alexeyOverlay_PATH)/dl"
+BR2_DL_DIR="$(BR2_EXTERNAL_alexeyOverlay_PATH)/../../dl"
 BR2_PACKAGE_OVERRIDE_FILE=""
 BR2_TOOLCHAIN_EXTERNAL=y
 BR2_INIT_SYSTEMD=y
