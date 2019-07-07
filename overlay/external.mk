@@ -1,1 +1,1 @@
-include $(sort $(wildcard $(BR2_EXTERNAL_KRAFTWAY_PATH)/package/*/*.mk))
+include $(sort $(wildcard $(BR2_EXTERNAL_alexeyOverlay_PATH)/package/*/*.mk))

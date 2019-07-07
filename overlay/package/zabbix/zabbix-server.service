@@ -1,0 +1,15 @@
+Description=Zabbix Server Daemon
+Requires=
+After=syslog.target network.target
+ 
+[Service]
+Type=forking
+ExecStart=/usr/sbin/zabbix_server
+ExecReload=/usr/sbin/zabbix_server -R config_cache_reload
+RuntimeDirectory=zabbix
+PIDFile=/run/zabbix/zabbix_server.pid
+User=zabbix
+Group=zabbix
+ 
+[Install]
+WantedBy=multi-user.target
