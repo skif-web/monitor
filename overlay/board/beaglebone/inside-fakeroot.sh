@@ -78,7 +78,7 @@ fi
 cat > ${TARGET_DIR}/usr/htdocs/conf/zabbix.conf.php <<EOF
 <?php
 // Zabbix GUI configuration file.
-global $DB;
+global \$DB;
 
 \$DB['TYPE']     = 'MYSQL';
 \$DB['SERVER']   = 'localhost';
