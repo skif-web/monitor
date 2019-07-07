@@ -1,7 +1,8 @@
 #!/bin/sh
 [Unit]
 Description=monitor prepare system
-Before=systemd-networkd.service systemd-resolved.service  mysqld.service
+After=mysqld.service
+Before=systemd-networkd.service systemd-resolved.service zabbix_agent.service
 
 [Service]
 Type=oneshot
