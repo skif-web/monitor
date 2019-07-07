@@ -2,7 +2,7 @@
 [Unit]
 Description=monitor prepare system
 After=mysqld.service
-Before=systemd-networkd.service systemd-resolved.service zabbix_agent.service
+Before=systemd-networkd.service systemd-resolved.service zabbix_agent.service zabbix_server.service
 
 [Service]
 Type=oneshot
@@ -10,3 +10,4 @@ ExecStart=/usr/bin/prepare.sh
 
 [Install]
 WantedBy=multi-user.target
+Wanted=mysqld.service
