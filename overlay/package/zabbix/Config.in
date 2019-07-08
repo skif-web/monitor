@@ -6,7 +6,6 @@ config BR2_PACKAGE_ZABBIX
 	select BR2_PACKAGE_NETSNMP
 	select BR2_PACKAGE_ZABBIX_CLIENT
 	select BR2_PACKAGE_PCRE # runtime
-	select BR2_TOOLCHAIN_BUILDROOT_WCHAR #zabbix runtime
 	select BR2_TOOLCHAIN_BUILDROOT_CXX #oracle-mysql
 	select BR2_PACKAGE_ZLIB
 	  help

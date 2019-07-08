@@ -35,22 +35,41 @@ done
 # apache
 #
 #########################################################
-# Add php
-grep -q 'SetHandler application/x-httpd-php' ${TARGET_DIR}/etc/apache2/httpd.conf
-php_apache_status=$?
-echo @$php_apache_status@
-if [ $php_apache_status -gt 0 ]; then
-    cat >> ${TARGET_DIR}/etc/apache2/httpd.conf <<EOF
-<FilesMatch ".+\.ph(p[3457]?|t|tml)$">
-    SetHandler application/x-httpd-php
-</FilesMatch>
+## Add php
+#grep -q 'SetHandler application/x-httpd-php' ${TARGET_DIR}/etc/apache2/httpd.conf
+#php_apache_status=$?
+#echo @$php_apache_status@
+#if [ $php_apache_status -gt 0 ]; then
+#    cat >> ${TARGET_DIR}/etc/apache2/httpd.conf <<EOF
+#<FilesMatch ".+\.ph(p[3457]?|t|tml)$">
+#    SetHandler application/x-httpd-php
+#</FilesMatch>
+#EOF
+#fi
+## Set index.php as default
+#rm ${TARGET_DIR}/usr/htdocs/index.html
+
+#sed -i -e 's/DirectoryIndex index.html/DirectoryIndex index.php/g' ${TARGET_DIR}/etc/apache2/httpd.conf
+
+
+#########################################################
+#
+# lighttpd
+#
+#########################################################
+
+grep -q 'include "conf.d/fastcgi.conf' ${TARGET_DIR}/etc/lighttpd/lighttpd.conf
+lighttpd_php_status=$?
+echo @lighttpd_php_status@
+if [ $lighttpd_php_status -gt 0 ]; then
+	cat >> ${TARGET_DIR}/etc/lighttpd/lighttpd.conf <<EOF
+include "conf.d/fastcgi.conf"	
+EOF
+        cat > ${TARGET_DIR}/etc/lighttpd/conf.d/fastcgi.conf <<EOF
+server.modules += ( "mod_fastcgi" )
+fastcgi.server  = ( ".php" => (( "socket" => "/var/run/php-fpm.sock", "allow-x-send-file" => "enable" )) )
 EOF
 fi
-# Set index.php as default
-rm ${TARGET_DIR}/usr/htdocs/index.html
-
-sed -i -e 's/DirectoryIndex index.html/DirectoryIndex index.php/g' ${TARGET_DIR}/etc/apache2/httpd.conf
-
 
 
 
@@ -71,7 +90,7 @@ zabbix_password_status=grep -q 'DBPassword=zabbix' ${TARGET_DIR}/etc/zabbix_serv
 #########################################################
 
 if [ -d ${TARGET_DIR}/usr/zabbix/php-frontend ]; then
-    mv ${TARGET_DIR}/usr/zabbix/php-frontend/* ${TARGET_DIR}/usr/htdocs/
+    mv ${TARGET_DIR}/usr/zabbix/php-frontend/* ${TARGET_DIR}/var/www/
     rm -rf ${TARGET_DIR}/usr/zabbix/php-frontend
 fi
 
