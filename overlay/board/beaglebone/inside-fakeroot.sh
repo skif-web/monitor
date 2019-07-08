@@ -94,7 +94,7 @@ if [ -d ${TARGET_DIR}/usr/zabbix/php-frontend ]; then
     rm -rf ${TARGET_DIR}/usr/zabbix/php-frontend
 fi
 
-cat > ${TARGET_DIR}/usr/htdocs/conf/zabbix.conf.php <<EOF
+cat > ${TARGET_DIR}/var/www/conf/zabbix.conf.php <<EOF
 <?php
 // Zabbix GUI configuration file.
 global \$DB;
@@ -148,6 +148,7 @@ sudo mount -t $dataImageFsType -o loop $dataImageFile $dataImageMountDir
 sudo cp ${TARGET_DIR/}/etc/systemd/network/beaglebone.network  $dataImageMountDir/
 sudo cp ${TARGET_DIR}/etc/zabbix_server.conf $dataImageMountDir/
 sudo cp ${TARGET_DIR}/etc/zabbix_agentd.conf $dataImageMountDir/
+sudo cp ${TARGET_DIR}/var/www/conf/zabbix.conf.php $dataImageMountDir/
 sudo umount $dataImageMountDir
 
 #########################################################

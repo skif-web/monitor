@@ -26,8 +26,7 @@ if [ -f /data/zabbix_server.conf ]; then
 fi
 
 if [ -f /data/zabbix.conf.php ]; then
-    cp /data/zabbix.conf.php /usr/htdocs/conf/zabbix.conf.php
-
+    cp /data/zabbix.conf.php /var/www/conf/zabbix.conf.php
 fi
 
 #########################################################
