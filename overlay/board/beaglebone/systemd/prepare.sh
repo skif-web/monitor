@@ -2,6 +2,50 @@
 
 #########################################################
 #
+# resize monitorData volume
+#
+#########################################################
+set -x
+dataVolumeDev=`blkid |grep 'LABEL="monitorData"'|awk '{print $1}'|tr -d :`
+dataVolumeDevShortName=`echo $dataVolumeDev|awk -F/ '{print $NF}'`
+dataVolumeSize=`df $dataVolumeDev|tail -n 1|awk '{print $2}'`
+dataVolumeRootDev=`lsblk|grep -B2 $dataVolumeDevShortName|head -n 1|awk '{print $1}'`
+
+if [ $dataVolumeSize -lt 524288 ]; then
+    mkdir -p /storage
+    cp -r /data/* /storage/
+    rm -rf /storage/lost+found
+    umount -f /data
+    # fsck -f $dataVolumeDev
+    fdisk /dev/$dataVolumeRootDev > /dev/null >&1 << EOF
+d
+2
+n
+p
+
+
+
+w
+fi
+EOF
+    sync
+    mkfs.ext4 -L monitorData $dataVolumeDev
+    mount $dataVolumeDev /data
+    mv /storage/* /data/
+fi
+
+#########################################################
+#
+# gent machine-id from MAC
+#
+#########################################################
+
+MAC=$(ip a list eth0 | grep link/ether | awk '{print $2}' )
+MACHINE_ID=$(echo $MAC | md5sum | awk '{print $1}' )
+echo $MACHINE_ID > /etc/machine-id
+
+#########################################################
+#
 # network settings restore
 #
 #########################################################
@@ -68,3 +112,12 @@ date > /date.txt
 sed -i -e 's/post_max_size = 8M/post_max_size = 16M/g' /etc/php.ini
 sed -i -e 's/max_execution_time = 30/max_execution_time = 300/g' /etc/php.ini
 sed -i -e 's/max_input_time = 60/max_input_time = 300/g' /etc/php.ini
+
+#########################################################
+#
+# systemd journald max logs size
+#
+#########################################################
+ journalctl --vacuum-size=2M
+
+
