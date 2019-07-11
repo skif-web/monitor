@@ -2,7 +2,7 @@
 [Unit]
 Description=monitor prepare system
 After=mysqld.service
-Before=systemd-networkd.service systemd-resolved.service zabbix_agent.service zabbix_server.service
+Before=systemd-networkd.service systemd-resolved.service zabbix_agent.service zabbix_server.service lighttpd.service
 
 [Service]
 Type=oneshot
