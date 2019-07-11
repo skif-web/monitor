@@ -1,5 +1,4 @@
 #!/bin/bash
-set -x
 
 #########################################################
 #
@@ -12,8 +11,6 @@ if [ -f  ${TARGET_DIR}/etc/systemd/network/dhcp.network ]; then
     mv ${TARGET_DIR}/etc/systemd/network/dhcp.network ${TARGET_DIR/}/etc/systemd/network/beaglebone.network
 fi
 
-
-
 #########################################################
 #
 # install systemd files
@@ -22,6 +19,8 @@ fi
 
 cp $BR2_EXTERNAL_alexeyOverlay_PATH/board/beaglebone/systemd/*sh ${TARGET_DIR}/usr/bin/
 chmod +x ${TARGET_DIR}/usr/bin/*sh
+
+# services
 for service in $BR2_EXTERNAL_alexeyOverlay_PATH/board/beaglebone//systemd/*service
 do
     serviceName=`echo $service|awk -F\/ '{print $NF}'`
@@ -30,27 +29,14 @@ do
     ln -sfr ${TARGET_DIR}/etc/systemd/system/$serviceName  ${TARGET_DIR}/etc/systemd/system/multi-user.target.wants/
 done
 
-#########################################################
-#
-# apache
-#
-#########################################################
-## Add php
-#grep -q 'SetHandler application/x-httpd-php' ${TARGET_DIR}/etc/apache2/httpd.conf
-#php_apache_status=$?
-#echo @$php_apache_status@
-#if [ $php_apache_status -gt 0 ]; then
-#    cat >> ${TARGET_DIR}/etc/apache2/httpd.conf <<EOF
-#<FilesMatch ".+\.ph(p[3457]?|t|tml)$">
-#    SetHandler application/x-httpd-php
-#</FilesMatch>
-#EOF
-#fi
-## Set index.php as default
-#rm ${TARGET_DIR}/usr/htdocs/index.html
-
-#sed -i -e 's/DirectoryIndex index.html/DirectoryIndex index.php/g' ${TARGET_DIR}/etc/apache2/httpd.conf
-
+# timers
+for timer in $BR2_EXTERNAL_alexeyOverlay_PATH/board/beaglebone/systemd/*timer
+do
+    timerName=`echo $timer|awk -F\/ '{print $NF}'`
+    cp $timer ${TARGET_DIR}/etc/systemd/system/
+    cd ${TARGET_DIR}/etc/systemd/system/
+    ln -sfr ${TARGET_DIR}/etc/systemd/system/$timerName  ${TARGET_DIR}/usr/lib/systemd/system/timers.target.wants/
+done
 
 #########################################################
 #
@@ -70,8 +56,6 @@ server.modules += ( "mod_fastcgi" )
 fastcgi.server  = ( ".php" => (( "socket" => "/var/run/php-fpm.sock", "allow-x-send-file" => "enable" )) )
 EOF
 fi
-
-
 
 #########################################################
 #
@@ -117,7 +101,13 @@ global \$DB;
 EOF
 
 
-
+#########################################################
+#
+# journald 
+#
+#########################################################
+# move to mem
+sed -i 's/#Storage=[a-zA-Z]*/Storage=volatile/g' ${TARGET_DIR}/etc/systemd/journald.conf
 
 #########################################################
 #
@@ -141,7 +131,7 @@ fi
 if [ -d $dataImageMountDir ]; then
     rm -rf $dataImageMountDir
 fi
-dd if=/dev/zero of=$dataImageFile bs=16M count=1
+dd if=/dev/zero of=$dataImageFile bs=8M count=1
 mkfs.$dataImageFsType -L $dataImageFsLabel $dataImageFile
 mkdir -p $dataImageMountDir
 sudo mount -t $dataImageFsType -o loop $dataImageFile $dataImageMountDir
