@@ -10,6 +10,8 @@ RuntimeDirectory=zabbix
 PIDFile=/run/zabbix/zabbix_server.pid
 User=zabbix
 Group=zabbix
- 
+WatchdogSec=30s
+Restart=on-failure
+
 [Install]
 WantedBy=multi-user.target

@@ -11,6 +11,8 @@ PIDFile=zabbix/zabbix_agentd.pid
 #PIDFile=/var/run/zabbix/zabbix_agentd.pid
 User=zabbix
 Group=zabbix
- 
+WatchdogSec=30s
+Restart=on-failure
+
 [Install]
 WantedBy=multi-user.target
