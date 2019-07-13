@@ -140,12 +140,3 @@ sudo cp ${TARGET_DIR}/etc/zabbix_server.conf $dataImageMountDir/
 sudo cp ${TARGET_DIR}/etc/zabbix_agentd.conf $dataImageMountDir/
 sudo cp ${TARGET_DIR}/var/www/conf/zabbix.conf.php $dataImageMountDir/
 sudo umount $dataImageMountDir
-
-#########################################################
-#
-# make fstab
-#
-#########################################################
-fstabFile="${TARGET_DIR}/etc/fstab"
-echo "" > $fstabFile
-echo "LABEL=$dataImageFsLabel /data $dataImageFsType  defaults   0 1" >> $fstabFile
