@@ -1,0 +1,37 @@
+--- a/Makefile
++++ b/Makefile
+@@ -1,23 +1,26 @@
++LIBS        = `pkg-config --libs --cflags libusb-1.0`
++CC          ?= gcc
++
+ all: RODOS5_6
+ 
+ RODOS5_6: main.o RODOS5_6.o onewire.o usb.o hid-libusb.o
+-	gcc main.o RODOS5_6.o onewire.o usb.o hid-libusb.o -o RODOS5_6 -lstdc++ -lusb-1.0 -lpthread
++	$(CC) main.o RODOS5_6.o onewire.o usb.o hid-libusb.o -o RODOS5_6 -lstdc++ -lusb-1.0 -lpthread $(CFLAGS) $(LIBS)
+ 
+ main.o: main.cpp
+-	gcc -c -std=c++11 -O2 main.cpp
++	$(CC) -c -std=c++11  main.cpp $(CFLAGS) $(LIBS)
+ 
+ RODOS5_6.o: RODOS5_6.cpp
+-	gcc -c -O2 RODOS5_6.cpp
++	$(CC) -c -O2 RODOS5_6.cpp $(CFLAGS) $(LIBS) 
+ 
+ onewire.o: onewire.cpp
+-	gcc -c -O2 onewire.cpp
++	$(CC) -c -O2  onewire.cpp $(CFLAGS) $(LIBS) 
+ 
+ usb.o: usb.cpp
+-	gcc -c -O2 usb.cpp
++	$(CC) -c -O2 usb.cpp
+ 	
+ hid-libusb.o: hid-libusb.c 
+-	gcc -I/usr/include/libusb-1.0 -I. -c -O2 hid-libusb.c
++	$(CC) -I. -c hid-libusb.c $(CFLAGS) $(LIBS)
+ 
+ clean:
+-	rm -f main.o RODOS5_6.o onewire.o usb.o hid-libusb.o
+-
++	rm -f main.o RODOS5_6.o onewire.o usb.o hid-libusb.o $(CFLAGS) $(LIBS)
++	

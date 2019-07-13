@@ -1,0 +1,5 @@
+config BR2_PACKAGE_RODOS
+	bool "rodos"
+	select BR2_PACKAGE_LIBUSB
+	  help
+	  rodos 5-6 usb termometer software
