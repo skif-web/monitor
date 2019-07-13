@@ -28,10 +28,12 @@ p
 w
 fi
 EOF
-    sync
+    # sync
+    # sleep 1
     mkfs.ext4 -L monitorData $dataVolumeDev
-    mount $dataVolumeDev /data
-    mv /storage/* /data/
+    # sync
+    # sleep 1
+    mount -a && mv /storage/* /data/ && reboot
 fi
 
 #########################################################
