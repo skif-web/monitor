@@ -2,10 +2,22 @@
 
 #########################################################
 #
+# enable terminals
+#
+#########################################################
+
+systemctl start getty@tty1.service
+systemctl start getty@tty2.service
+systemctl start getty@tty3.service
+systemctl start getty@tty4.service
+systemctl start getty@tty5.service
+
+#########################################################
+#
 # resize monitorData volume
 #
 #########################################################
-set -x
+
 dataVolumeDev=`blkid |grep 'LABEL="monitorData"'|awk '{print $1}'|tr -d :`
 dataVolumeDevShortName=`echo $dataVolumeDev|awk -F/ '{print $NF}'`
 dataVolumeSize=`df $dataVolumeDev|tail -n 1|awk '{print $2}'`
@@ -28,17 +40,18 @@ p
 w
 fi
 EOF
-    # sync
-    # sleep 1
-    mkfs.ext4 -L monitorData $dataVolumeDev
-    # sync
-    # sleep 1
-    mount -a && mv /storage/* /data/ && reboot
+    mkfs.ext4 -L monitorData -E nodiscard $dataVolumeDev
+    sync
+    sleep 0.5
+    mount  $dataVolumeDev /data/
+    mv /storage/* /data/
+else
+    mount  $dataVolumeDev /data/
 fi
 
 #########################################################
 #
-# gent machine-id from MAC
+# generate machine-id from MAC
 #
 #########################################################
 
@@ -82,7 +95,6 @@ fi
 #########################################################
 
 # permissions
-# mysql -u root --execute "create database zabbix character set utf8 collate utf8_bin;"
 while true
 do
     mysql -u root --execute "create database zabbix;" && \
@@ -121,5 +133,3 @@ sed -i -e 's/max_input_time = 60/max_input_time = 300/g' /etc/php.ini
 #
 #########################################################
  journalctl --vacuum-size=2M
-
-
