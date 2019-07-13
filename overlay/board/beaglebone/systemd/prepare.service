@@ -7,7 +7,8 @@ Before=systemd-networkd.service systemd-resolved.service zabbix_agent.service za
 [Service]
 Type=oneshot
 ExecStart=/usr/bin/prepare.sh
+StartLimitInterval=1min
 
 [Install]
 WantedBy=multi-user.target
-Wanted=mysqld.service
+Wants=mysqld.service
