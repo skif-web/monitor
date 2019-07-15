@@ -42,10 +42,20 @@ fi
 
 #########################################################
 #
+# generate and set root passwd
+#
+#########################################################
+root_pass=`head /dev/urandom | tr -dc A-Za-z0-9 | head -c 6 ; echo ''`
+echo -e "$root_pass\n$root_pass" | (passwd root)
+echo root path: $root_pass >> /etc/issue
+
+#########################################################
+#
 # enable terminals
 #
 #########################################################
 
+systemctl restart getty@tty1.service
 systemctl start getty@tty2.service
 systemctl start getty@tty3.service
 systemctl start getty@tty4.service
