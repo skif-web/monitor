@@ -1,0 +1,5 @@
+[Unit]
+Description=RODOS temp daemon
+
+[Service]
+ExecStart=/usr/bin/rodos.sh

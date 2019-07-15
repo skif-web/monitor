@@ -1,0 +1,6 @@
+[Unit]
+Description=dump script for zabbix DB
+
+[Service]
+ExecStart=/usr/bin/zabbixDump.sh
+TimeoutSec=300
