@@ -59,6 +59,16 @@ fi
 
 #########################################################
 #
+# php settings fix
+#
+#########################################################
+
+sed -i -e 's/post_max_size = 8M/post_max_size = 16M/g' ${TARGET_DIR}/etc/php.ini
+sed -i -e 's/max_execution_time = 30/max_execution_time = 300/g' ${TARGET_DIR}/etc/php.ini
+sed -i -e 's/max_input_time = 60/max_input_time = 300/g' ${TARGET_DIR}/etc/php.ini
+
+#########################################################
+#
 # make zabbix default configs
 #
 #########################################################
@@ -100,6 +110,16 @@ global \$DB;
 \$IMAGE_FORMAT_DEFAULT = IMAGE_FORMAT_PNG;
 EOF
 
+#########################################################
+#
+# disable some services autorun
+#
+#########################################################
+
+find ${TARGET_DIR}/etc ${TARGET_DIR}/usr/lib/systemd -iname multi-user.target.wants -type d|xargs -I {} find {} -iname systemd-resolved* -delete
+find ${TARGET_DIR}/etc ${TARGET_DIR}/usr/lib/systemd -iname multi-user.target.wants -type d|xargs -I {} find {} -iname systemd-networkd.service* -delete
+find ${TARGET_DIR}/etc ${TARGET_DIR}/usr/lib/systemd -iname multi-user.target.wants -type d|xargs -I {} find {} -iname zabbix-agent.service* -delete
+find ${TARGET_DIR}/etc ${TARGET_DIR}/usr/lib/systemd -iname multi-user.target.wants -type d|xargs -I {} find {} -iname zabbix-server.service* -delete
 
 #########################################################
 #
@@ -139,4 +159,14 @@ sudo cp ${TARGET_DIR/}/etc/systemd/network/beaglebone.network  $dataImageMountDi
 sudo cp ${TARGET_DIR}/etc/zabbix_server.conf $dataImageMountDir/
 sudo cp ${TARGET_DIR}/etc/zabbix_agentd.conf $dataImageMountDir/
 sudo cp ${TARGET_DIR}/var/www/conf/zabbix.conf.php $dataImageMountDir/
+chmod 0777 $dataImageMountDir/*
 sudo umount $dataImageMountDir
+
+#########################################################
+#
+# make fstab
+#
+#########################################################
+fstabFile="${TARGET_DIR}/etc/fstab"
+echo "" > $fstabFile
+echo "LABEL=$dataImageFsLabel /data $dataImageFsType  defaults   0 1" >> $fstabFile
