@@ -22,8 +22,8 @@ if [ -d  /var/mysql/zabbix ]; then
     done
 
     # Last, do dump
-    touch /data/fullDump$(date +"%s").sql
-    sync
+    # touch /data/fullDump$(date +"%s").sql
+    # sync
     /bin/mysqldump zabbix > /data/fullDump$(date +"%s").sql
     sync
 fi
