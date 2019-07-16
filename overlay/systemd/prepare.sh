@@ -1,4 +1,17 @@
-#!/bin/bash
+#!/bin/bash --login
+
+#########################################################
+#
+# restore time zone 
+#
+#########################################################
+
+# TODO восстановить часовой пояс из конфига
+if [ -f $SETTINGS ]; then
+    timezone=`grep 'timezone=' $SETTINGS|awk -F= '{print$NF}'`
+    if [ "x$timezone" != "x" ]; then
+        timedatectl set-timezone $timezone
+    fi
 
 #########################################################
 #
@@ -77,8 +90,8 @@ echo $MACHINE_ID > /etc/machine-id
 #
 #########################################################
 
-if [ -f /data/beaglebone.network ]; then
-    cp /data/beaglebone.network /etc/systemd/network/
+if [ -f /data/wired.network ]; then
+    cp /data/wired.network /etc/systemd/network/
 fi
 
 systemctl start systemd-networkd

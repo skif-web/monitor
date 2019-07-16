@@ -8,7 +8,7 @@
 
 # rename default config 
 if [ -f  ${TARGET_DIR}/etc/systemd/network/dhcp.network ]; then
-    mv ${TARGET_DIR}/etc/systemd/network/dhcp.network ${TARGET_DIR/}/etc/systemd/network/beaglebone.network
+    mv ${TARGET_DIR}/etc/systemd/network/dhcp.network ${TARGET_DIR/}/etc/systemd/network/wired.network
 fi
 
 #########################################################
