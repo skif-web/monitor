@@ -12,7 +12,7 @@ if [ -f $SETTINGS ]; then
     if [ "x$timezone" != "x" ]; then
         timedatectl set-timezone $timezone
     fi
-
+fi
 #########################################################
 #
 # resize monitorData volume
