@@ -1,0 +1,102 @@
+From fe488e62b3045d68c303be8d4cd9df7ac1df53c3 Mon Sep 17 00:00:00 2001
+From: Alexey Lukyanchuk <skif@skif-web.ru>
+Date: Sun, 19 May 2019 13:39:58 +0300
+Subject: [PATCH 2/2] fs/iso9660: add specified files to image
+
+Allows to add any specified files to iso-image
+
+Signed-off-by: Alexey Lukyanchuk <skif@skif-web.ru>
+---
+ fs/iso9660/Config.in  |  5 +++++
+ fs/iso9660/iso9660.mk | 12 ++++++++++++
+ 2 files changed, 17 insertions(+)
+
+diff --git a/fs/iso9660/Config.in b/fs/iso9660/Config.in
+index 6f001c0640..588fc307a5 100644
+--- a/fs/iso9660/Config.in
++++ b/fs/iso9660/Config.in
+@@ -81,6 +81,16 @@
+ 	  which BIOS considers a hard disk or ZIP disk, e.g. a USB key
+ 	  or similar.
+ 
++config BR2_ROOTFS_ISO9660_ADDITIONAL_FILES
++	string "Add additional files to iso"
++	help
++	  Use this option to add any additional files to iso
++
++config BR2_ROOTFS_ISO9660_LABEL
++	string "ISO LABEL"
++	help
++	  Set costom iso-label
++
+ endif
+ 
+ comment "iso image needs a Linux kernel and either grub2 i386-pc or isolinux to be built"
+
+diff --git a/fs/iso9660/iso9660.mk b/fs/iso9660/iso9660.mk
+index a129655ce3..809f883be7 100644
+--- a/fs/iso9660/iso9660.mk
++++ b/fs/iso9660/iso9660.mk
+@@ -23,6 +23,9 @@
+ #     of BR2_TARGET_ROOTFS_ISO9660_INITRD).
+ 
+ ROOTFS_ISO9660_BOOT_MENU = $(call qstrip,$(BR2_TARGET_ROOTFS_ISO9660_BOOT_MENU))
++ROOTFS_ISO9660_ADDITIONAL_FILES=$(call qstrip,$(BR2_ROOTFS_ISO9660_ADDITIONAL_FILES))
++ROOTFS_ISO9660_LABEL=$(call qstrip,$(BR2_ROOTFS_ISO9660_LABEL))
++
+ 
+ ROOTFS_ISO9660_DEPENDENCIES = host-cdrkit linux
+ 
+@@ -82,7 +85,7 @@
+ define ROOTFS_ISO9660_PREPARATION
+ 	$(INSTALL) -D -m 0644 $(ROOTFS_ISO9660_BOOT_MENU) \
+ 		$(ROOTFS_ISO9660_BOOTLOADER_CONFIG_PATH)
+-	$(SED) "s%__KERNEL_PATH__%/boot/$(LINUX_IMAGE_NAME)%" \
++	$(SED) "s%__KERNEL_PATH__%/$(LINUX_IMAGE_NAME)%" \
+ 		$(ROOTFS_ISO9660_BOOTLOADER_CONFIG_PATH)
+ 	$(ROOTFS_ISO9660_INSTALL_BOOTLOADER)
+ endef
+@@ -96,7 +99,7 @@
+ # Copy the kernel to temporary filesystem
+ define ROOTFS_ISO9660_COPY_KERNEL
+ 	$(INSTALL) -D -m 0644 $(LINUX_IMAGE_PATH) \
+-		$(ROOTFS_ISO9660_TMP_TARGET_DIR)/boot/$(LINUX_IMAGE_NAME)
++		$(ROOTFS_ISO9660_TMP_TARGET_DIR)/$(LINUX_IMAGE_NAME)
+ endef
+ 
+ ifeq ($(ROOTFS_ISO9660_USE_INITRD),YES)
+@@ -111,8 +114,8 @@
+ ROOTFS_ISO9660_DEPENDENCIES += rootfs-cpio
+ define ROOTFS_ISO9660_COPY_INITRD
+ 	$(INSTALL) -D -m 0644 $(BINARIES_DIR)/rootfs.cpio$(ROOTFS_CPIO_COMPRESS_EXT) \
+-		$(ROOTFS_ISO9660_TMP_TARGET_DIR)/boot/initrd
+-	$(SED) "s%__INITRD_PATH__%/boot/initrd%" \
++		$(ROOTFS_ISO9660_TMP_TARGET_DIR)/initrd
++	$(SED) "s%__INITRD_PATH__%/initrd%" \
+ 		$(ROOTFS_ISO9660_BOOTLOADER_CONFIG_PATH)
+ endef
+ ROOTFS_ISO9660_PRE_GEN_HOOKS += ROOTFS_ISO9660_COPY_INITRD
+@@ -130,6 +133,7 @@
+ 
+ define ROOTFS_ISO9660_CMD
+ 	$(HOST_DIR)/bin/genisoimage -J -R -b $(ROOTFS_ISO9660_BOOT_IMAGE) \
++		$(if $(ROOTFS_ISO9660_LABEL),-V $(ROOTFS_ISO9660_LABEL)) \
+ 		-no-emul-boot -boot-load-size 4 -boot-info-table \
+ 		$(ROOTFS_ISO9660_GENISOIMAGE_OPTS) \
+ 		-o $@ $(ROOTFS_ISO9660_TMP_TARGET_DIR)
+@@ -143,4 +147,15 @@
+ ROOTFS_ISO9660_POST_GEN_HOOKS += ROOTFS_ISO9660_GEN_HYBRID
+ endif
+ 
++define ROOTFS_ISO9660_ADD_ADDITIONAL_FILES
++	for i in $(ROOTFS_ISO9660_ADDITIONAL_FILES); do
++		cp -r $${i} \
++			$(ROOTFS_ISO9660_TMP_TARGET_DIR)/
++	done
++endef
++
++ifneq ($(ROOTFS_ISO9660_ADDITIONAL_FILES),)
++ROOTFS_ISO9660_PRE_GEN_HOOKS += ROOTFS_ISO9660_ADD_ADDITIONAL_FILES
++endif
++
+ $(eval $(rootfs))
