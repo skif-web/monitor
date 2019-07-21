@@ -43,6 +43,7 @@ config BR2_PACKAGE_ZABBIX_SERVER_MYSQL
 config BR2_PACKAGE_ZABBIX_SERVER_POSTGRESQL
 	bool "Use postgresql support"
 	select BR2_PACKAGE_POSTGRESQL
+	select BR2_PACKAGE_PHP_EXT_PGSQL
 
 endchoice
 
