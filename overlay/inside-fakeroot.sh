@@ -93,7 +93,7 @@ cat > ${TARGET_DIR}/var/www/conf/zabbix.conf.php <<EOF
 // Zabbix GUI configuration file.
 global \$DB;
 
-\$DB['TYPE']     = 'MYSQL';
+\$DB['TYPE']     = 'POSTGRESQL';
 \$DB['SERVER']   = 'localhost';
 \$DB['PORT']     = '0';
 \$DB['DATABASE'] = 'zabbix';
@@ -116,10 +116,9 @@ EOF
 #
 #########################################################
 
-find ${TARGET_DIR}/etc ${TARGET_DIR}/usr/lib/systemd -iname multi-user.target.wants -type d|xargs -I {} find {} -iname systemd-resolved* -delete
-find ${TARGET_DIR}/etc ${TARGET_DIR}/usr/lib/systemd -iname multi-user.target.wants -type d|xargs -I {} find {} -iname systemd-networkd.service* -delete
-find ${TARGET_DIR}/etc ${TARGET_DIR}/usr/lib/systemd -iname multi-user.target.wants -type d|xargs -I {} find {} -iname zabbix-agent.service* -delete
-find ${TARGET_DIR}/etc ${TARGET_DIR}/usr/lib/systemd -iname multi-user.target.wants -type d|xargs -I {} find {} -iname zabbix-server.service* -delete
+# find ${TARGET_DIR}/etc ${TARGET_DIR}/usr/lib/systemd -iname multi-user.target.wants -type d|xargs -I {} find {} -iname zabbix-agent.service* -delete
+# find ${TARGET_DIR}/etc ${TARGET_DIR}/usr/lib/systemd -iname multi-user.target.wants -type d|xargs -I {} find {} -iname zabbix-server.service* -delete
+# find ${TARGET_DIR}/etc ${TARGET_DIR}/usr/lib/systemd -iname multi-user.target.wants -type d|xargs -I {} find {} -iname systemd-resolved.service* -delete
 
 #########################################################
 #
