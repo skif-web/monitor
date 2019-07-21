@@ -22,7 +22,7 @@ fi
 if [ -d $dataImageMountDir ]; then
     rm -rf $dataImageMountDir
 fi
-dd if=/dev/zero of=$ImageFile bs=128M count=1
+dd if=/dev/zero of=$ImageFile bs=700M count=1
 loop_dev=`sudo losetup -fP $ImageFile --show`
 echo $loop_dev
 sudo fdisk $loop_dev > /dev/null 2>&1 << EOF
