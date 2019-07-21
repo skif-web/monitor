@@ -1,15 +1,12 @@
 #!/bin/sh
 [Unit]
 Description=monitor prepare system
-After=mysqld.service 
-# Before=systemd-networkd.service systemd-resolved.service zabbix_agent.service zabbix_server.service lighttpd.service
-Before=zabbix_agent.service zabbix_server.service lighttpd.service
+After=postgresql.service
+Before=zabbix-server.service zabbix-agent.service
 
 [Service]
 Type=oneshot
 ExecStart=/usr/bin/prepare.sh
-StartLimitInterval=1min
 
 [Install]
 WantedBy=multi-user.target
-Wants=mysqld.service
