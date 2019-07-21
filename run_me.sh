@@ -60,7 +60,7 @@ if [ ${#defconfigs_array[@]} -gt 0 ]; then
     fi
 fi
 
-for patch_name in `find $patch_dir/ -iname *.diff`
+for patch_name in `find $patch_dir/ -iname *.diff|sort`
 do
 	echo $patch_name
  	patch -p1 < $patch_name
