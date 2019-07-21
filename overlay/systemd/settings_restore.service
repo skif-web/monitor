@@ -1,0 +1,10 @@
+[Unit]
+Description=restore system settings
+Before=network.service prepare.service postgresql.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/settings_restore.sh
+
+[Install]
+WantedBy=multi-user.target
