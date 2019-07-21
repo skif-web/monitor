@@ -154,7 +154,7 @@ dd if=/dev/zero of=$dataImageFile bs=8M count=1
 mkfs.$dataImageFsType -L $dataImageFsLabel $dataImageFile
 mkdir -p $dataImageMountDir
 sudo mount -t $dataImageFsType -o loop $dataImageFile $dataImageMountDir
-sudo cp ${TARGET_DIR/}/etc/systemd/network/beaglebone.network  $dataImageMountDir/
+sudo cp ${TARGET_DIR/}/etc/systemd/network/wired.network  $dataImageMountDir/
 sudo cp ${TARGET_DIR}/etc/zabbix_server.conf $dataImageMountDir/
 sudo cp ${TARGET_DIR}/etc/zabbix_agentd.conf $dataImageMountDir/
 sudo cp ${TARGET_DIR}/var/www/conf/zabbix.conf.php $dataImageMountDir/

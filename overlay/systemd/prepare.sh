@@ -36,12 +36,12 @@ fi
 # done
 
 # Try to find any dump
-sqlDump=`ls -lt /data/fullDump\*.sql 2>/dev/null|head -n1|awk '{print $NF}'`
+sqlDump=`ls -lt /data/fullDump*.sql 2>/dev/null|head -n1|awk '{print $NF}'`
 
 # If dump exist, then restore it
 # else use default files
 if [ "x$sqlDump" != "x" ]; then
-    ppsql --user postgres zabbix<$sqlDump
+    psql -U zabbix -d zabbix -f $sqlDump
 else
     psql -U zabbix -d zabbix -f /usr/zabbix/postgresql_schema/schema.sql
     # sleep 0.5

@@ -1,6 +1,6 @@
 [Unit]
 Description=restore system settings
-Before=network.service prepare.service postgresql.service
+Before=network.service prepare.service postgresql.service systemd-networkd.service systemd-resolved.service
 
 [Service]
 Type=oneshot
