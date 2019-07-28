@@ -7,6 +7,7 @@ config BR2_PACKAGE_ZABBIX
 	select BR2_PACKAGE_ZABBIX_CLIENT
 	select BR2_PACKAGE_PCRE # runtime
 	select BR2_PACKAGE_ZLIB
+	select BR2_PACKAGE_LIBCURL # runtime
 	  help
 	  zabbix monitoring system
 
@@ -16,7 +17,6 @@ config BR2_PACKAGE_ZABBIX_SERVER
 	bool "zabbix server"
 	depends on BR2_USE_MMU # netsnmp
 	select BR2_SYSTEM_ENABLE_NLS
-	select BR2_PACKAGE_LIBCURL # runtime
 	help
 	  Zabbix monitoring server
 	  Server php-frontends files placed in \

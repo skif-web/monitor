@@ -7,8 +7,9 @@
 ZABBIX_VERSION = 4.2.4
 ZABBIX_SITE = https://sourceforge.net/projects/zabbix/files
 
-ZABBIX_DEPENDENCIES = libevent libxml2 netsnmp libcurl pcre zlib host-libcurl
-ZABBIX_CONF_OPTS = --with-libpcre=$(STAGING_DIR)/usr/bin/ --with-libcurl --with-libevent --with-libxml2--with-net-snmp=$(STAGING_DIR)/usr/bin/
+ZABBIX_DEPENDENCIES = host-libcurl libevent libxml2 netsnmp libcurl pcre zlib host-libxml2
+ZABBIX_CONF_OPTS = --with-libpcre=$(STAGING_DIR)/usr/bin/ --with-libcurl=$(STAGING_DIR)/usr/bin/curl-config \
+	--with-libevent --with-libxml2=$(STAGING_DIR)/usr/bin/xml2-config --with-net-snmp=$(STAGING_DIR)/usr/bin/net-snmp-config
 
 define ZABBIX_SERVER_COPY_FRONTEND
 	mkdir -p $(TARGET_DIR)/usr/zabbix/php-frontend/
