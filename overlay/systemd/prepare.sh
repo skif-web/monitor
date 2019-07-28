@@ -52,15 +52,18 @@ fi
 
 #########################################################
 #
-# start zabbix services
+# prepare issue
 #
 #########################################################
 
-# systemctl restart zabbix-server
-# systemctl restart zabbix-agent
+current_ip=`ifconfig eth0 |grep 'inet addr'| cut -d":" -f2|awk '{print $1}'`
+old_ip=`grep 'current ip' /etc/issue |awk '{print $2}'`
 
-# TODO
-# надо бы получение настроек сети в /etc/issue
+if [ "x$current_ip" != "x$old_ip" ]; then
+    sed -i '/current ip \([0-9]\{1,3\}\.\)\{3\}[0-9]\{1,3\}/d' /etc/issue
+    echo "current ip $current_ip" >> /etc/issue
+    echo "current ip $current_ip" >> /dev/tty1
+fi
 
-echo "Ready to work" > /etc/issue
+echo "Ready to work" >> /etc/issue
 systemctl restart getty@tty1.service

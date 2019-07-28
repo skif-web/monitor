@@ -20,9 +20,6 @@ if [ "x$db_exist" != "x" ]; then
         fi
     done
 
-    # Last, do dump
-    # touch /data/fullDump$(date +"%s").sql
-    # sync
     pg_dump --user zabbix zabbix > /data/fullDump$(date +"%s").sql
     sync
 fi
