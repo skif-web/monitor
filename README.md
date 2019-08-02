@@ -1,7 +1,29 @@
 ## About
 
 It's a small linux distro with zabbix, postgresql, builded as firmware: not changeble system image file with restorable configurations. Simple to use, small-size.
-Used build-system is Buildroot
+Used build-system is Buildroot.
+
+Build for admins, who need zabbix without big work (for example, windows admins and linux beginners).
+
+Cross-platform, can work in some ARM singe-board computers such asus tinker board and beaglebone black. Also avaible qemu_x86_64.
+
+System can monitoring temperature by external USB-thermometr(see Thermal control part)
+
+Using the buildroot build system allows you to create customized solutions that can be operated by personnel with minimal knowledge of the Linux operating systems. This system is friendly to beginners, but at the same time gives ample opportunities for customization for an experienced developer. It is perfect for solving the problem of inexpensive, but full-featured monitoring of it infrastructure, minimally demanding to the training of its operating personnel.
+
+It is a firmware packaged in a single sdcard.img file. Enough dd utility to fill it on the media.
+During loading, file access is expanded, services are downloaded. As a result, you can get a hardware-software monitoring complex that can be ported to the desired architecture.
+
+##Thermal control
+System can monitor temperature with RODOS 5 (https://silines.ru/rodos-5s)
+If divece inserted in USB-port, you can monitor temperature by zabbix. To do this, you shoud create new data item in Zabbix:
+
+- name - as you wish
+- Type - zabbix  agent
+- Key - vfs.file.contents[/tmp/rodos_current_temp]
+- Type- numeric
+- Units - C
+- New upplication - server Room Temp
 
 ## Build instructions
 1. Clone git
@@ -46,6 +68,7 @@ If no dump finded, system will use defauls zabbix dump's for fresh-installed sys
 Every 15 minutes and every shutdown system make new dump.
 
 Default user-pass for ssh and console is root:admin
+Dedault zabbix web-interface credentials is Adminx:zabbix
 
 
 ## Board-specific info
@@ -65,4 +88,4 @@ remove bootloader from build-im emmc( https://www.erdahl.io/2016/12/beaglebone-b
 ```bash
 qemu-system-x86_64 -m 2048 -smp 4 -drive file=output/images/sdcard.img,if=virtio,format=raw --enable-kvm -nic bridge,br=bridge0,model=virtio
 ```
-This command will run system with 4 cpu, 2048 RAM, enabled KVM, virtio-net device bridget to real NIC.
+This command will run system with 4 cpu, 2048 RAM, enabled KVM, virtio-net device bridged to real NIC.
