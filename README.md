@@ -5,22 +5,22 @@ Used build-system is Buildroot
 
 ## Build instructions
 1. Clone git
-```clone
+```bash
 git clone git@github.com:skif-web/monitor.git
 ```
 2. Run script run_me.sh inside monitor directory , select need arch
-```clone
+```bash
 cd monitor
 ./run_me.sh
 ```
 3. Go to extracted directory
 cd buildroot-2019.05/
 4. build image
-```clone
+```bash
 make 
 ```
 5. Write image do drive:
-```clone
+```bash
 dd if=output/images/sdcard.img of=/dev/sdb && sync
 ```
 ## Work instructions
