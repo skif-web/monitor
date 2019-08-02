@@ -50,7 +50,7 @@ All this configs are  restored on boot! If you need to change them, you mush cha
 
 If no config files finded on boot, system will use default build-in configs. 
 
-Zabbix database storad in RAM. Every boot system restore database from microsd files, using last dump( called zabbixFullDump{timestamp_of_dump}.sql
+Zabbix database stored in RAM. Every boot system restore database from microsd files, using last dump( called zabbixFullDump{timestamp_of_dump}.sql
 If no dump finded, system will use defauls zabbix dump's for fresh-installed system
 Every 15 minutes and every shutdown system make new dump.
 
