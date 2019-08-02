@@ -40,7 +40,7 @@ dd if=output/images/sdcard.img of=/dev/sdb && sync
 ##########################################################################
 There are 2 partitions on microsd card - with system files and data 
 First partition only for bootloader and system!
-Every reboot remove all changes on / filesystem!
+Every reboot removes all changes on / filesystem!
 Second partition(monitorData) for changeble configs and zabbix-database dump.
 On first boot system will resize data-partition to all free space
 
