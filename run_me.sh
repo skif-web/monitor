@@ -36,7 +36,7 @@ buildroot_name=`basename $buildroot_arch_name .tar.gz`
 
 cd $buildroot_name
 defconfigs_array=()
-for i in `find $overlay_dir/configs/ -type f -iname *_defconfig |awk -F\/ '{print $NF}'`;do
+for i in `find $overlay_dir/configs/ -type f -iname *_defconfig |awk -F\/ '{print $NF}'|sort`;do
 	defconfigs_array+=("$i")
 done
 
