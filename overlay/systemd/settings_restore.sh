@@ -1,4 +1,5 @@
 #!/bin/bash
+source /etc/profile.d/monitorVariables.sh 
 
 #########################################################
 #
@@ -56,7 +57,7 @@ EOF
     mount  $dataVolumeDev /data/
     mv /storage/* /data/
 else
-    echo "Please wait until all services start" > /deb/tty1
+    echo "Please wait until all services start" > /dev/tty1
     mount  $dataVolumeDev /data/
 fi
 
@@ -67,7 +68,7 @@ fi
 #########################################################
 # root_pass=`head /dev/urandom | tr -dc A-Za-z0-9 | head -c 6 ; echo ''`
 # echo -e "$root_pass\n$root_pass" | (passwd root)
-# echo root path: $root_pass >> /deb/tty1
+# echo root path: $root_pass >> /dev/tty1
 
 #########################################################
 #
