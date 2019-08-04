@@ -1,79 +1,25 @@
-#!/bin/bash
+#!/bin/sh
 
-#########################################################
-#
-# make data.img for second sdcard partition
-#
-#########################################################
-ImageFile="${BINARIES_DIR}/sdcard.img"
-ImageMountDir="${BINARIES_DIR}/sdcard"
-kernelFile="${BINARIES_DIR}/bzImage"
-mbrFile="${BINARIES_DIR}/syslinux/mbr.bin"
+BOARD_DIR="$(dirname $0)"
 
-while mount|grep $ImageMountDir > /dev/null
-do
-    sudo umount -R -l $ImageMountDir/*
-done
+rm -rf ${BINARIES_DIR}/sys
+mkdir -p ${BINARIES_DIR}/sys
 
-if [ -f $dataImageFsystemctl ]; then
-    rm -rf $dataImageFile
-fi
-
-if [ -d $dataImageMountDir ]; then
-    rm -rf $dataImageMountDir
-fi
-dd if=/dev/zero of=$ImageFile bs=700M count=1
-loop_dev=`sudo losetup -fP $ImageFile --show`
-echo $loop_dev
-sudo fdisk $loop_dev > /dev/null 2>&1 << EOF
-n
-p
-1
-
-+70M
-a
-n
-p
-2
+cp ${BINARIES_DIR}/bzImage ${BINARIES_DIR}/sys
+find ${BUILD_DIR}/grub2* -iname boot.img -exec cp {} $BINARIES_DIR \;
+# grub config
+mkdir -p ${BINARIES_DIR}/sys/boot/grub
+cp ${BOARD_DIR}/grub.cfg ${BINARIES_DIR}/sys/boot/grub/
 
 
-w
-EOF
-set -x
-sync
-sleep 0.5
-sudo mkfs.vfat -n monitorboot ${loop_dev}p1
-sync
-sleep 0.5
-sudo dd if=$mbrFile of=$loop_dev
-sync
-sleep 0.5
-sudo output/build/syslinux-6.03/bios/linux/syslinux --install ${loop_dev}p1
-echo $?
-# sh
-sync
+GENIMAGE_CFG="${BOARD_DIR}/genimage.cfg"
+GENIMAGE_TMP="${BUILD_DIR}/genimage.tmp"
 
-sudo mkfs.ext4 -L monitorData ${loop_dev}p2
-sync
-sleep 0.5
-fsck.ext4 -y -f  ${loop_dev}p2
-sync
-sleep 0.5
-mkdir -p $ImageMountDir/sys
-mkdir -p $ImageMountDir/data
-sudo mount -o loop ${loop_dev}p1 $ImageMountDir/sys -o umask=000
-sudo mount -t ext4 -o loop ${loop_dev}p2 ${ImageMountDir}/data 
+rm -rf "${GENIMAGE_TMP}"
 
-cp ${BINARIES_DIR}/bzImage $ImageMountDir/sys/
-cp ${BR2_EXTERNAL_alexeyOverlay_PATH}/board/x86_64/syslinux.cfg ${ImageMountDir}/sys/
-sudo cp ${TARGET_DIR/}/etc/systemd/network/wired.network  ${ImageMountDir}/data/
-sudo cp ${TARGET_DIR}/etc/zabbix_server.conf ${ImageMountDir}/data/
-sudo cp ${TARGET_DIR}/etc/zabbix_agentd.conf ${ImageMountDir}/data/
-sudo cp ${TARGET_DIR}/var/www/conf/zabbix.conf.php ${ImageMountDir}/data/
-sudo chmod 0777 $ImageMountDir/data/*
-sudo umount $ImageMountDir/data/
-sudo umount $ImageMountDir/sys
-sudo output/build/syslinux-6.03/bios/linux/syslinux --install ${loop_dev}p1
-
-sudo losetup -d $loop_dev
-sync
+genimage \
+    --rootpath "${BINARIES_DIR}" \
+    --tmppath "${GENIMAGE_TMP}" \
+    --inputpath "${BINARIES_DIR}" \
+    --outputpath "${BINARIES_DIR}" \
+    --config "${GENIMAGE_CFG}"
