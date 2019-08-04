@@ -74,7 +74,7 @@ sed -i -e 's/max_input_time = 60/max_input_time = 300/g' ${TARGET_DIR}/etc/php.i
 #########################################################
 
 # Set dbPassword for zabbix server
-zabbix_password_status=grep -q 'DBPassword=zabbix' ${TARGET_DIR}/etc/zabbix_server.conf || \
+grep -q 'DBPassword=zabbix' ${TARGET_DIR}/etc/zabbix_server.conf || \
     sed -i -e '/DBPassword=/a\' -e 'DBPassword=zabbix' ${TARGET_DIR}/etc/zabbix_server.conf
 
 #########################################################
@@ -133,33 +133,33 @@ sed -i 's/#Storage=[a-zA-Z]*/Storage=volatile/g' ${TARGET_DIR}/etc/systemd/journ
 # make data.img for second sdcard partition
 #
 #########################################################
-dataImageFile="${BINARIES_DIR}/data.img"
-dataImageMountDir="${BINARIES_DIR}/data"
-dataImageFsType="ext4"
-dataImageFsLabel="monitorData"
+# dataImageFile="${BINARIES_DIR}/data.img"
+# dataImageMountDir="${BINARIES_DIR}/data"
+# dataImageFsType="ext4"
+# dataImageFsLabel="monitorData"
 
-while mount|grep $dataImageMountDir > /dev/null
-do
-    sudo umount -l $dataImageFile
-done
+# while mount|grep $dataImageMountDir > /dev/null
+# do
+#     sudo umount -l $dataImageFile
+# done
 
-if [ -f $dataImageFsystemctl start prepare.serviceile ]; then
-    rm -rf $dataImageFile
-fi
+# if [ -f $dataImageFsystemctl ]; then
+#     rm -rf $dataImageFile
+# fi
 
-if [ -d $dataImageMountDir ]; then
-    rm -rf $dataImageMountDir
-fi
-dd if=/dev/zero of=$dataImageFile bs=8M count=1
-mkfs.$dataImageFsType -L $dataImageFsLabel $dataImageFile
-mkdir -p $dataImageMountDir
-sudo mount -t $dataImageFsType -o loop $dataImageFile $dataImageMountDir
-sudo cp ${TARGET_DIR/}/etc/systemd/network/wired.network  $dataImageMountDir/
-sudo cp ${TARGET_DIR}/etc/zabbix_server.conf $dataImageMountDir/
-sudo cp ${TARGET_DIR}/etc/zabbix_agentd.conf $dataImageMountDir/
-sudo cp ${TARGET_DIR}/var/www/conf/zabbix.conf.php $dataImageMountDir/
-chmod 0777 $dataImageMountDir/*
-sudo umount $dataImageMountDir
+# if [ -d $dataImageMountDir ]; then
+#     rm -rf $dataImageMountDir
+# fi
+# dd if=/dev/zero of=$dataImageFile bs=8M count=1
+# mkfs.$dataImageFsType -L $dataImageFsLabel $dataImageFile
+# mkdir -p $dataImageMountDir
+# sudo mount -t $dataImageFsType -o loop $dataImageFile $dataImageMountDir
+# sudo cp ${TARGET_DIR/}/etc/systemd/network/wired.network  $dataImageMountDir/
+# sudo cp ${TARGET_DIR}/etc/zabbix_server.conf $dataImageMountDir/
+# sudo cp ${TARGET_DIR}/etc/zabbix_agentd.conf $dataImageMountDir/
+# sudo cp ${TARGET_DIR}/var/www/conf/zabbix.conf.php $dataImageMountDir/
+# chmod 0777 $dataImageMountDir/*
+# sudo umount $dataImageMountDir
 
 #########################################################
 #
@@ -167,5 +167,8 @@ sudo umount $dataImageMountDir
 #
 #########################################################
 fstabFile="${TARGET_DIR}/etc/fstab"
+dataImageFsType="ext4"
+dataImageFsLabel="monitorData"
+
 echo "" > $fstabFile
 echo "LABEL=$dataImageFsLabel /data $dataImageFsType  defaults   0 1" >> $fstabFile
