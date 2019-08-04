@@ -21,19 +21,23 @@ fi
 
 #########################################################
 #
+# zabbix dirs
+#
+#########################################################
+
+mkdir -p /run/zabbix
+chown zabbix:zabbix /run/zabbix
+
+#########################################################
+#
 # postgresql-zabbix restore
 #
 #########################################################
 
 # permissions
-# while true
-# do
-    psql --user postgres -c "CREATE USER zabbix WITH PASSWORD 'zabbix';" && \
-        psql --user postgres -c "CREATE DATABASE zabbix ENCODING 'Unicode' TEMPLATE template0 OWNER zabbix;" && \
-            psql --user postgres -c "GRANT ALL PRIVILEGES ON DATABASE zabbix TO zabbix;" #&& \
-                # break   
-    # sleep 0.1
-# done
+psql --user postgres -c "CREATE USER zabbix WITH PASSWORD 'zabbix';" && \
+    psql --user postgres -c "CREATE DATABASE zabbix ENCODING 'Unicode' TEMPLATE template0 OWNER zabbix;" && \
+        psql --user postgres -c "GRANT ALL PRIVILEGES ON DATABASE zabbix TO zabbix;" 
 
 # Try to find any dump
 sqlDump=`ls -lt /data/fullDump*.sql 2>/dev/null|head -n1|awk '{print $NF}'`
@@ -59,7 +63,5 @@ fi
 current_ip=`ifconfig eth0 |grep 'inet addr'| cut -d":" -f2|awk '{print $1}'`
 
 echo "current ip $current_ip" > /etc/issue
-echo "current ip $current_ip" >> /dev/tty1
-
 echo "Ready to work" >> /etc/issue
 systemctl restart getty@tty1.service
