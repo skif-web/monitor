@@ -84,7 +84,7 @@ grep -q 'DBPassword=zabbix' ${TARGET_DIR}/etc/zabbix_server.conf || \
 #########################################################
 
 if [ -d ${TARGET_DIR}/usr/zabbix/php-frontend ]; then
-    mv ${TARGET_DIR}/usr/zabbix/php-frontend/* ${TARGET_DIR}/var/www/
+    mv ${TARGET_DIR}/usr/zabbix/php-frontend/* ${TARGET_DIR}/var/www/zabbix/
     rm -rf ${TARGET_DIR}/usr/zabbix/php-frontend
 fi
 
@@ -119,6 +119,7 @@ EOF
 # find ${TARGET_DIR}/etc ${TARGET_DIR}/usr/lib/systemd -iname multi-user.target.wants -type d|xargs -I {} find {} -iname zabbix-agent.service* -delete
 # find ${TARGET_DIR}/etc ${TARGET_DIR}/usr/lib/systemd -iname multi-user.target.wants -type d|xargs -I {} find {} -iname zabbix-server.service* -delete
 # find ${TARGET_DIR}/etc ${TARGET_DIR}/usr/lib/systemd -iname multi-user.target.wants -type d|xargs -I {} find {} -iname systemd-resolved.service* -delete
+# find ${TARGET_DIR}/etc ${TARGET_DIR}/usr/lib/systemd -iname multi-user.target.wants -type d|xargs -I {} find {} -iname *postgre*.service* -delete
 
 #########################################################
 #
