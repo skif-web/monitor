@@ -1,3 +1,3 @@
-source "$BR2_EXTERNAL_alexeyOverlay_PATH/package/zabbix/Config.in"
-source "$BR2_EXTERNAL_alexeyOverlay_PATH/package/rodos/Config.in"
-source "$BR2_EXTERNAL_alexeyOverlay_PATH/package/manuals/Config.in"
+source "$BR2_EXTERNAL_monitorOverlay_PATH/package/zabbix/Config.in"
+source "$BR2_EXTERNAL_monitorOverlay_PATH/package/rodos/Config.in"
+source "$BR2_EXTERNAL_monitorOverlay_PATH/package/manuals/Config.in"

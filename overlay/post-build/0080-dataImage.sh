@@ -6,9 +6,9 @@ mkdir -p $DATADIR
 
 cp ${TARGET_DIR}/etc/settingsDefault.txt $DATADIR/
 
-echo overlay=${BR2_EXTERNAL_alexeyOverlay_PATH}
+echo overlay=${BR2_EXTERNAL_monitorOverlay_PATH}
 
-GENIMAGE_CFG="${BR2_EXTERNAL_alexeyOverlay_PATH}/genDataImage.cfg"
+GENIMAGE_CFG="${BR2_EXTERNAL_monitorOverlay_PATH}/genDataImage.cfg"
 GENIMAGE_TMP="${BUILD_DIR}/genimage.tmp"
 
 rm -rf "${GENIMAGE_TMP}"

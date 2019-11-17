@@ -17,11 +17,11 @@ fi
 #
 #########################################################
 
-cp $BR2_EXTERNAL_alexeyOverlay_PATH/systemd/*sh ${TARGET_DIR}/usr/bin/
+cp $BR2_EXTERNAL_monitorOverlay_PATH/systemd/*sh ${TARGET_DIR}/usr/bin/
 chmod +x ${TARGET_DIR}/usr/bin/*sh
 
 # services
-for service in $BR2_EXTERNAL_alexeyOverlay_PATH//systemd/*service
+for service in $BR2_EXTERNAL_monitorOverlay_PATH//systemd/*service
 do
     serviceName=`echo $service|awk -F\/ '{print $NF}'`
     cp $service ${TARGET_DIR}/etc/systemd/system/
@@ -30,7 +30,7 @@ do
 done
 
 # timers
-for timer in $BR2_EXTERNAL_alexeyOverlay_PATH/systemd/*timer
+for timer in $BR2_EXTERNAL_monitorOverlay_PATH/systemd/*timer
 do
     timerName=`echo $timer|awk -F\/ '{print $NF}'`
     cp $timer ${TARGET_DIR}/etc/systemd/system/

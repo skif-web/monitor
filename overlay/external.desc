@@ -1,2 +1,2 @@
-name: alexeyOverlay
-desc: Alexey overlay for zabbix monitoring
+name: monitorOverlay
+desc: overlay for monitor linux

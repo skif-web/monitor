@@ -6,7 +6,7 @@
 BOARD_DIR="$(dirname $0)"
 
 # copy the uEnv.txt to the output/images directory
-cp $BR2_EXTERNAL_alexeyOverlay_PATH/board/beaglebone/uEnv.txt $BINARIES_DIR/uEnv.txt
+cp $BR2_EXTERNAL_monitorOverlay_PATH/board/beaglebone/uEnv.txt $BINARIES_DIR/uEnv.txt
 
 # the 4.1 kernel does not provide a dtb for beaglebone green, so we
 # use a different genimage config if am335x-bonegreen.dtb is not
