@@ -59,8 +59,6 @@ f_save_settings () {
 }
 
 f_save_network () {
-    echo $@
-    
     sed -i '/hostname=*/d' $SETTINGS
     echo "$1" >> $SETTINGS
     sed -i '/network=*/d' $SETTINGS && \
