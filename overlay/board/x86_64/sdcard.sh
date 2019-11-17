@@ -23,3 +23,6 @@ genimage \
     --inputpath "${BINARIES_DIR}" \
     --outputpath "${BINARIES_DIR}" \
     --config "${GENIMAGE_CFG}"
+
+rm -f ${BINARIES_DIR}/external.img 2>/dev/null
+qemu-img create -f qcow2 ${BINARIES_DIR}/external.img 10G
