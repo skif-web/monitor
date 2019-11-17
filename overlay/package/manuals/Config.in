@@ -1,0 +1,4 @@
+config BR2_PACKAGE_MANUALS
+	bool "manuals"
+	  help
+	  create pdf and html manuals 
