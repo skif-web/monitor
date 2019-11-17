@@ -37,33 +37,24 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-lg-12">
-                        <h1>Info</h1>
-                        <h2>Uptime</h2>
+                        <h1>Power management</h1>
+                        <form  method="post">
                         <?php
-                            $output = shell_exec('libWebInterface.sh f_get_uptime');
-                            echo "<pre>$output</pre>";
-                        ?> 
+                        if ( isset($_POST['reboot']) ) {
+                            echo "reboot";
+                            $status = shell_exec("sudo -u root /usr/bin/libWebInterface.sh f_reboot");
+                        }
 
-                        <h2>CPU load</h2>
-                        <?php
-                            $output = shell_exec('libWebInterface.sh f_get_cpu_load');
-                            echo "<pre>$output</pre>";
-                        ?> 
-                        <h2>Memory load</h2>
-                        <?php
-                            $output = shell_exec('libWebInterface.sh f_get_memory_load');
-                            echo "<pre>$output</pre>";
+                        if ( isset($_POST['poweroff']) ) {
+                            echo "poweroff";
+                            $status = shell_exec("sudo -u root /usr/bin/libWebInterface.sh f_poweroff");
+                        }
                         ?>
-                        <h2>Network settings</h2>
-                        <?php
-                            $output = shell_exec('libWebInterface.sh f_get_ip');
-                            echo "<pre>$output</pre>";
-                        ?>             
-                        <h2>SDcard usage</h2>
-                        <?php
-                            $output = shell_exec('libWebInterface.sh f_get_free_space');
-                            echo "<pre>$output</pre>";
-                        ?> 
+
+                        <input name="reboot" type="submit" value="REBOOT" />
+                        <input name="poweroff" type="submit" value="Poweroff" />
+
+                        </form>
                     </div>
                 </div>
             </div>
@@ -89,7 +80,11 @@
 
 
 
-
 </body>
 
 </html>
+
+
+<?php
+
+?>

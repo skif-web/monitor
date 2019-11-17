@@ -37,33 +37,32 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-lg-12">
-                        <h1>Info</h1>
-                        <h2>Uptime</h2>
+                        <h1>Firmware update</h1>
+                        <form  method="post" enctype="multipart/form-data">
                         <?php
-                            $output = shell_exec('libWebInterface.sh f_get_uptime');
-                            echo "<pre>$output</pre>";
-                        ?> 
 
-                        <h2>CPU load</h2>
-                        <?php
-                            $output = shell_exec('libWebInterface.sh f_get_cpu_load');
-                            echo "<pre>$output</pre>";
-                        ?> 
-                        <h2>Memory load</h2>
-                        <?php
-                            $output = shell_exec('libWebInterface.sh f_get_memory_load');
-                            echo "<pre>$output</pre>";
+                        if(isset($_POST["upload_firmware"])) {
+                            shell_exec("sudo -u root /usr/bin/libWebInterface.sh f_clean_upload");
+                            $target_file = "uploads/firmware";
+
+                            if (move_uploaded_file($_FILES["firmware"]["tmp_name"], $target_file)) {
+                                echo "The file ". basename( $_FILES["firmware"]["name"]). " has been uploaded.";
+                            } else {
+                                echo "Sorry, there was an error uploading your file.";
+                            }
+                            
+                            $status = shell_exec("sudo -u root /usr/bin/libWebInterface.sh f_update");
+                            echo "<pre>$status</pre>";
+                        }
                         ?>
-                        <h2>Network settings</h2>
-                        <?php
-                            $output = shell_exec('libWebInterface.sh f_get_ip');
-                            echo "<pre>$output</pre>";
-                        ?>             
-                        <h2>SDcard usage</h2>
-                        <?php
-                            $output = shell_exec('libWebInterface.sh f_get_free_space');
-                            echo "<pre>$output</pre>";
-                        ?> 
+                        <hr>
+
+                        <input type="file" name="firmware" id="firmware">
+                        <hr>
+                        <input type="submit" value="Upload firmware" name="upload_firmware">
+                        </form>
+
+
                     </div>
                 </div>
             </div>
@@ -89,7 +88,11 @@
 
 
 
-
 </body>
 
 </html>
+
+
+<?php
+
+?>
