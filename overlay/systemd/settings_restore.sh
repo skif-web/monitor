@@ -1,5 +1,58 @@
-#!/bin/bash
+#!/bin/bash --login
 source /etc/profile.d/monitorVariables.sh 
+source $MY_LIB
+
+set -x
+
+#########################################################
+#
+# restore settings to profile
+#
+#########################################################
+
+if [ ! -f $SETTINGS ]; then
+    cp /etc/settingsDefault.txt $SETTINGS
+fi
+
+while read line
+do
+    echo $line >> /etc/profile.d/monitorSettings.sh
+done< $SETTINGS
+source /etc/profile.d/monitorSettings.sh
+
+#########################################################
+#
+# restore root passwd
+# 
+#########################################################
+
+passwd=`grep ^passwd= $SETTINGS|awk -F= '{print $2}'`
+if [ "x$passwd" != "x" ]; then
+    sed -i '/root:*/d' /etc/shadow
+    echo $passwd >> /etc/shadow
+fi
+#########################################################
+#
+# restore web passwd
+# 
+#########################################################
+
+if [ "x$web_passwd" == "x" ]; then
+    f_set_web_pass admin
+else
+    echo $web_passwd > /etc/lighttpd/lighttpd-htdigest.user
+fi
+
+#########################################################
+#
+# hostname restore
+# 
+#########################################################
+
+if [ "x$hostname" == "x" ]; then
+    hostname="monitor.localnet"
+fi
+hostnamectl set-hostname $hostname
 
 #########################################################
 #
@@ -7,13 +60,7 @@ source /etc/profile.d/monitorVariables.sh
 #
 #########################################################
 
-# TODO восстановить часовой пояс из конфига
-if [ -f $SETTINGS ]; then
-    timezone=`grep 'timezone=' $SETTINGS|awk -F= '{print$NF}'`
-    if [ "x$timezone" != "x" ]; then
-        timedatectl set-timezone $timezone
-    fi
-fi
+timedatectl set-timezone $timezone
 
 #########################################################
 #
@@ -86,8 +133,16 @@ echo $MACHINE_ID > /etc/machine-id
 #
 #########################################################
 
-if [ -f /data/wired.network ]; then
-    cp /data/wired.network /etc/systemd/network/
+echo '[Match]' > $NETWORK_CONF
+echo 'Name=eth0' >> $NETWORK_CONF
+echo '[Network]' >> $NETWORK_CONF
+if [ "x$network" == 'xstatic' ]; then
+echo "Address=$ip/$netmask" >> $NETWORK_CONF
+echo "Gateway=$gateway" >>$NETWORK_CONF
+echo "nameserver $dns1" > /etc/resolv.conf
+echo "nameserver $dns2" >> /etc/resolv.conf
+else
+    echo 'DHCP=ipv4' >> $NETWORK_CONF
 fi
 
 #########################################################
@@ -97,3 +152,67 @@ fi
 #########################################################
  
  journalctl --vacuum-size=2M
+
+#########################################################
+#
+# external mount
+#
+#########################################################
+
+clear
+mkdir -p /data/pgsql
+if [ "x$external" = "xy" ]; then
+    external_exist=`blkid|awk '{print $2}'|grep "LABEL=\"external\""`
+    if [ "x$external_exist" == "x" ]; then
+        my_drive=`blkid|grep 'monitorData'| awk -F\: '{print $1}'|awk -F/ '{print $NF}'`
+        all_drive=`lsblk -d|grep disk|awk '{print $1}'|sort`
+        echo all_drive=$all_drive
+        for drive in $all_drive
+        do
+            echo drive=$drive
+           
+            status=`echo $my_drive|grep $drive`
+            if [ "x$status" == "x" ];then
+                dd if=/dev/zero of=/dev/$drive count=1 bs=10M
+                sync
+                fdisk /dev/$drive > /dev/null >&1 << EOF
+n
+p
+
+
+
+w
+fi
+EOF
+        drive=`fdisk -l /dev/$drive|tail -n 1|awk '{print $1}'`
+        mkfs.ext4 -L "external" ${drive}
+        break
+            fi
+        done
+    fi
+    drive=`blkid|grep LABEL=\"external\"| awk -F: '{print $1}'`
+    mount $drive /data/pgsql
+    
+fi
+mkdir -p /data/pgsql/dir
+chown postgres:postgres /data/pgsql/dir
+set +x
+
+#########################################################
+#
+# postgresql dir on hdd
+#
+#########################################################
+
+mount -o bind /data/pgsql/dir /var/lib/pgsql
+
+#########################################################
+#
+# web-interface upload dir
+#
+#########################################################
+
+mkdir -p /var/www/manage/uploads
+mkdir -p $DATA/web
+mount -o bind $DATA/web /var/www/manage/uploads
+chown www-data:www-data /var/www/manage/uploads
