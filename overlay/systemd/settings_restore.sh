@@ -2,7 +2,7 @@
 source /etc/profile.d/monitorVariables.sh 
 source $MY_LIB
 
-set -x
+# set -x
 
 #########################################################
 #
@@ -81,9 +81,12 @@ dataVolumeDevShortName=`echo $dataVolumeDev|awk -F/ '{print $NF}'`
 dataVolumeSize=`df $dataVolumeDev|tail -n 1|awk '{print $2}'`
 dataVolumeRootDev=`lsblk|grep -B2 $dataVolumeDevShortName|head -n 1|awk '{print $1}'`
 
-if [ $dataVolumeSize -lt 524288 ]; then
+start=$(cat /sys/block/$dataVolumeRootDev/$dataVolumeDevShortName/start)
+end=$(($start+$(cat /sys/block/$dataVolumeRootDev/$dataVolumeDevShortName/size)))
+newend=$(($(cat /sys/block/$dataVolumeRootDev/size)-8))
 
-
+if [ "$newend" -gt "$end" ]
+then
     mkdir -p /storage
     cp -r /data/* /storage/
     rm -rf /storage/lost+found
@@ -132,15 +135,16 @@ echo $MACHINE_ID > /etc/machine-id
 # network settings restore
 #
 #########################################################
-
+set -x
 echo '[Match]' > $NETWORK_CONF
 echo 'Name=eth0' >> $NETWORK_CONF
 echo '[Network]' >> $NETWORK_CONF
 if [ "x$network" == 'xstatic' ]; then
-echo "Address=$ip/$netmask" >> $NETWORK_CONF
-echo "Gateway=$gateway" >>$NETWORK_CONF
-echo "nameserver $dns1" > /etc/resolv.conf
-echo "nameserver $dns2" >> /etc/resolv.conf
+    echo "Address=$ip/$netmask" >> $NETWORK_CONF
+    echo "Gateway=$gateway" >>$NETWORK_CONF
+    if [ "x$dns1" != "x" ]; then
+        echo "DNS=$dns1 $dns2" >> $NETWORK_CONF
+    fi
 else
     echo 'DHCP=ipv4' >> $NETWORK_CONF
 fi
@@ -196,7 +200,6 @@ EOF
 fi
 mkdir -p /data/pgsql/dir
 chown postgres:postgres /data/pgsql/dir
-set +x
 
 #########################################################
 #
