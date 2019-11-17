@@ -43,7 +43,7 @@
 
                         if(isset($_POST["upload_firmware"])) {
                             shell_exec("sudo -u root /usr/bin/libWebInterface.sh f_clean_upload");
-                            $target_file = "uploads/firmware";
+                            $target_file = "uploads/firmware.tar.gz";
 
                             if (move_uploaded_file($_FILES["firmware"]["tmp_name"], $target_file)) {
                                 echo "The file ". basename( $_FILES["firmware"]["name"]). " has been uploaded.";

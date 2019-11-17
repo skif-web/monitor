@@ -148,13 +148,11 @@ f_clean_upload () {
 f_update () {
     set -x
     firmware="$DATA/web/firmware.tar.gz"
-    if [ -f $firmware ];
-    then
-        return 0
-        rm -rf $tmp/update 2>/dev/null
-        mkdir -p $tmp/update
-        bsdtar -ef $firmware -C /tmp/update
-        # bash /tmp/update/update.sh && \
+    if [ -f $firmware ];then
+        rm -rf /tmp/update 2>/dev/null
+        mkdir -p /tmp/update
+        bsdtar -xf $firmware -C /tmp/update
+        bash /tmp/update/update/update.sh && \
         echo "Update Success, please reboot" && \
         return 0
         return 1

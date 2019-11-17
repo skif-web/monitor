@@ -1,5 +1,5 @@
 #!/bin/bash
-src="/tmp/update"
+src="/tmp/update/update"
 
 update_dir=`mktemp -d`
 mkdir -p $update_dir
