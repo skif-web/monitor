@@ -1,0 +1,6 @@
+[Unit]
+Description=run logrotate
+
+[Service]
+ExecStart=logrotate /etc/logrotate.conf
+TimeoutSec=300

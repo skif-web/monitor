@@ -1,5 +1,5 @@
 [Unit]
-Description=Run MySQL dump every 15 min
+Description=Run logrotate
  
 [Timer]
 OnBootSec=15min
