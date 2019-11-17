@@ -169,5 +169,4 @@ fstabFile="${TARGET_DIR}/etc/fstab"
 dataImageFsType="ext4"
 dataImageFsLabel="monitorData"
 
-echo "" > $fstabFile
-echo "LABEL=$dataImageFsLabel /data $dataImageFsType  defaults   0 1" >> $fstabFile
+echo "LABEL=$dataImageFsLabel /data $dataImageFsType  defaults   0 1" > $fstabFile
