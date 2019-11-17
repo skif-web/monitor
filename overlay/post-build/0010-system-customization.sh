@@ -40,7 +40,32 @@ done
 
 #########################################################
 #
-# lighttpd
+# lighttpd - auth for /manage/
+#
+#########################################################
+
+grep -q 'auth.backend.htdigest.userfile = "/etc/lighttpd/lighttpd-htdigest.user"' ${TARGET_DIR}/etc/lighttpd/lighttpd.conf
+lighttpd_auth_status=$?
+if [ $lighttpd_auth_status -gt 0 ]; then
+	cat >> ${TARGET_DIR}/etc/lighttpd/lighttpd.conf <<EOF
+server.modules += ( "mod_auth" )
+server.modules += ( "mod_authn_file" )
+auth.backend = "htdigest" 
+auth.backend.htdigest.userfile = "/etc/lighttpd/lighttpd-htdigest.user" 
+auth.debug = 0
+auth.require = ( "/manage/" =>
+                 (
+                   "method"    => "digest",
+                   "realm"     => "manage",
+                   "require"   => "user=admin" 
+                 )
+                )
+EOF
+fi
+
+#########################################################
+#
+# lighttpd - php
 #
 #########################################################
 
@@ -63,9 +88,16 @@ fi
 #
 #########################################################
 
-sed -i -e 's/post_max_size = 8M/post_max_size = 16M/g' ${TARGET_DIR}/etc/php.ini
-sed -i -e 's/max_execution_time = 30/max_execution_time = 300/g' ${TARGET_DIR}/etc/php.ini
-sed -i -e 's/max_input_time = 60/max_input_time = 300/g' ${TARGET_DIR}/etc/php.ini
+
+sed -i -e '/post_max_size =*/d'  ${TARGET_DIR}/etc/php.ini
+sed -i -e '/max_execution_time =*/d'  ${TARGET_DIR}/etc/php.ini
+sed -i -e '/max_input_time =*/d'  ${TARGET_DIR}/etc/php.ini
+sed -i -e '/upload_max_filesize =*/d'  ${TARGET_DIR}/etc/php.ini
+
+echo 'post_max_size = 1900M' >> ${TARGET_DIR}/etc/php.ini
+echo 'max_execution_time = 300/g' >> ${TARGET_DIR}/etc/php.ini
+echo 'max_input_time = 300/g' >> ${TARGET_DIR}/etc/php.ini
+echo 'upload_max_filesize = 1800/g' >> ${TARGET_DIR}/etc/php.ini
 
 #########################################################
 #
@@ -84,11 +116,12 @@ grep -q 'DBPassword=zabbix' ${TARGET_DIR}/etc/zabbix_server.conf || \
 #########################################################
 
 if [ -d ${TARGET_DIR}/usr/zabbix/php-frontend ]; then
-    mv ${TARGET_DIR}/usr/zabbix/php-frontend/* ${TARGET_DIR}/var/www/zabbix/
+    mkdir -p ${TARGET_DIR}/var/www/zabbix/
+    mv ${TARGET_DIR}/usr/zabbix/php-frontend/* ${TARGET_DIR}/var/www/zabbix/ && \
     rm -rf ${TARGET_DIR}/usr/zabbix/php-frontend
 fi
 
-cat > ${TARGET_DIR}/var/www/conf/zabbix.conf.php <<EOF
+cat > ${TARGET_DIR}/var/www/zabbix/conf/zabbix.conf.php <<EOF
 <?php
 // Zabbix GUI configuration file.
 global \$DB;
@@ -109,16 +142,14 @@ global \$DB;
 
 \$IMAGE_FORMAT_DEFAULT = IMAGE_FORMAT_PNG;
 EOF
-
 #########################################################
 #
-# disable some services autorun
+# disable some services autorun (for debug)
 #
 #########################################################
 
 # find ${TARGET_DIR}/etc ${TARGET_DIR}/usr/lib/systemd -iname multi-user.target.wants -type d|xargs -I {} find {} -iname zabbix-agent.service* -delete
 # find ${TARGET_DIR}/etc ${TARGET_DIR}/usr/lib/systemd -iname multi-user.target.wants -type d|xargs -I {} find {} -iname zabbix-server.service* -delete
-# find ${TARGET_DIR}/etc ${TARGET_DIR}/usr/lib/systemd -iname multi-user.target.wants -type d|xargs -I {} find {} -iname systemd-resolved.service* -delete
 # find ${TARGET_DIR}/etc ${TARGET_DIR}/usr/lib/systemd -iname multi-user.target.wants -type d|xargs -I {} find {} -iname *postgre*.service* -delete
 
 #########################################################
@@ -128,39 +159,6 @@ EOF
 #########################################################
 # move to mem
 sed -i 's/#Storage=[a-zA-Z]*/Storage=volatile/g' ${TARGET_DIR}/etc/systemd/journald.conf
-
-#########################################################
-#
-# make data.img for second sdcard partition
-#
-#########################################################
-# dataImageFile="${BINARIES_DIR}/data.img"
-# dataImageMountDir="${BINARIES_DIR}/data"
-# dataImageFsType="ext4"
-# dataImageFsLabel="monitorData"
-
-# while mount|grep $dataImageMountDir > /dev/null
-# do
-#     sudo umount -l $dataImageFile
-# done
-
-# if [ -f $dataImageFsystemctl ]; then
-#     rm -rf $dataImageFile
-# fi
-
-# if [ -d $dataImageMountDir ]; then
-#     rm -rf $dataImageMountDir
-# fi
-# dd if=/dev/zero of=$dataImageFile bs=8M count=1
-# mkfs.$dataImageFsType -L $dataImageFsLabel $dataImageFile
-# mkdir -p $dataImageMountDir
-# sudo mount -t $dataImageFsType -o loop $dataImageFile $dataImageMountDir
-# sudo cp ${TARGET_DIR/}/etc/systemd/network/wired.network  $dataImageMountDir/
-# sudo cp ${TARGET_DIR}/etc/zabbix_server.conf $dataImageMountDir/
-# sudo cp ${TARGET_DIR}/etc/zabbix_agentd.conf $dataImageMountDir/
-# sudo cp ${TARGET_DIR}/var/www/conf/zabbix.conf.php $dataImageMountDir/
-# chmod 0777 $dataImageMountDir/*
-# sudo umount $dataImageMountDir
 
 #########################################################
 #
