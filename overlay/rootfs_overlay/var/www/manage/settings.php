@@ -96,9 +96,9 @@
                         </div>
                         <div>
                         <hr>
-                        <p>Пароль администратора</p>
+                        <p>Admin password</p>
                         <input type="password" maxlength='15' size='15' value="" name=passwd></p>
-                        <p>Подтверждение пароля</p>
+                        <p>Confirm admin password</p>
                         <input type="password" maxlength='15' size='15' value="" name=passwd_confirm></p>
                         </div>
                         <div>
