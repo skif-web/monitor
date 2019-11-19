@@ -8,8 +8,8 @@ source $MY_LIB
 #
 #########################################################
 
-mkdir -p /run/zabbix
-chown zabbix:zabbix /run/zabbix
+# mkdir -p /run/zabbix
+# chown zabbix:zabbix /run/zabbix
 
 #########################################################
 #
