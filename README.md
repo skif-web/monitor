@@ -18,7 +18,7 @@ During loading, file access is expanded, services are downloaded. As a result, y
 
 ##Thermal control
 System can monitor temperature with RODOS 5 (https://silines.ru/rodos-5s)
-If divece inserted in USB-port, you can monitor temperature by zabbix. To do this, you shoud create new data item in Zabbix:
+If device inserted in USB-port, you can monitor temperature by zabbix. To do this, you shoud create new data item in Zabbix:
 
 - name - as you wish
 - Type - zabbix  agent
@@ -142,7 +142,6 @@ remove bootloader from build-im emmc( https://www.erdahl.io/2016/12/beaglebone-b
 
 ### QEMU x86_64
 
-
 qemu-system-x86_64 -smp 4 -m 4026M -enable-kvm -machine q35,accel=kvm -device intel-iommu -cpu host -net nic -net bridge,br=bridge0 -device virtio-scsi-pci,id=scsi0 -drive file=output/images/qemu.qcow2,format=qcow2,aio=threads -device virtio-scsi-pci,id=scsi0 -drive file=output/images/data.qcow2,format=qcow2,aio=threads
 
-This command will run system with 4 cpu, 2048 RAM, enabled KVM, virtio-net device bridged to real NIC and 2 hdd drive: sdcard with 
+This command will run system with 4 cpu, 2048 RAM, enabled KVM, virtio-net device bridged to real NIC and 2 hdd drive: sdcard with system+configs and second (external) for postgresql files.
