@@ -102,7 +102,8 @@ p
 w
 fi
 EOF
-    mkfs.ext4 -L monitorData $dataVolumeDev
+    # mkfs.ext4 -L monitorData $dataVolumeDev
+    resize2fs $dataVolumeDev
     sync
     mount  $dataVolumeDev /data/
     mv /storage/* /data/
