@@ -27,6 +27,13 @@ If divece inserted in USB-port, you can monitor temperature by zabbix. To do thi
 - Units - C
 - New upplication - server Room Temp
 
+## Download
+Current version 1.0b:
+https://github.com/skif-web/monitor/releases/tag/1.0b
+
+All releases:
+https://github.com/skif-web/monitor/releases
+
 ## Build instructions
 1. Clone git
 ```bash
