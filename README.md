@@ -16,7 +16,12 @@ Using the buildroot build system allows you to create customized solutions that 
 It is a firmware packaged in a single sdcard.img file. Enough dd utility to fill it on the media.
 During loading, file access is expanded, services are downloaded. As a result, you can get a hardware-software monitoring complex that can be ported to the desired architecture.
 
-##Thermal control
+## Download
+[Current version 1.0b:] (https://github.com/skif-web/monitor/releases/tag/1.0b)
+
+[All releases:] (https://github.com/skif-web/monitor/releases)
+
+## Thermal control
 System can monitor temperature with RODOS 5 (https://silines.ru/rodos-5s)
 If divece inserted in USB-port, you can monitor temperature by zabbix. To do this, you shoud create new data item in Zabbix:
 
@@ -26,14 +31,7 @@ If divece inserted in USB-port, you can monitor temperature by zabbix. To do thi
 - Type- numeric
 - Units - C
 - New upplication - server Room Temp
-
-## Download
-Current version 1.0b:
-https://github.com/skif-web/monitor/releases/tag/1.0b
-
-All releases:
-https://github.com/skif-web/monitor/releases
-
+- 
 ## Build instructions
 1. Clone git
 ```bash
