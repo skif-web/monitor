@@ -1,54 +1,77 @@
 config BR2_PACKAGE_ZABBIX
 	bool "zabbix"
-#	depends on BR2_TOOLCHAIN_BUILDROOT_GLIBC
-	select BR2_PACKAGE_LIBEVENT
-	select BR2_PACKAGE_LIBXML2
-	select BR2_PACKAGE_NETSNMP
-	select BR2_PACKAGE_ZABBIX_CLIENT
-	select BR2_PACKAGE_PCRE # runtime
-	select BR2_PACKAGE_ZLIB
-	select BR2_PACKAGE_LIBCURL # runtime
-	  help
-	  zabbix monitoring system
+	depends on BR2_TOOLCHAIN_USES_GLIBC=y || BR2_TOOLCHAIN_EXTERNAL_GLIBC=y || BR2_TOOLCHAIN_EXTERNAL_CUSTOM_GLIBC=y
+	select BR2_PACKAGE_PCRE
+	help
+	  Zabbix is an enterprise-class open source distributed
+	  monitoring solution.Zabbix is free of cost. Zabbix
+	  is written and distributed under the GPL General Public
+	  License version 2.
 
 if BR2_PACKAGE_ZABBIX
 
+if (!BR2_PACKAGE_POSTGRESQL && !BR2_PACKAGE_MYSQL)
+comment "zabbix server needs postgresql or mysql support"
+endif
+
 config BR2_PACKAGE_ZABBIX_SERVER
 	bool "zabbix server"
+	depends on BR2_PACKAGE_POSTGRESQL || BR2_PACKAGE_MYSQL
 	depends on BR2_USE_MMU # netsnmp
-	select BR2_SYSTEM_ENABLE_NLS
-	help
-	  Zabbix monitoring server
-	  Server php-frontends files placed in \
-	  $(TARGET_DIR)/usr/zabbix/php-frontend
-	  Database initial files for postgres are placed in \
-	   /usr/zabbix/postgresql_schema/
-	  Database initial files for mysql are placed in\
-	   /usr/zabbix/mysql_schema/
+	select BR2_PACKAGE_LIBEVENT
+	select BR2_PACKAGE_LIBXML2
+	select BR2_PACKAGE_NETSNMP
+	select BR2_PACKAGE_ZLIB
+	select BR2_PACKAGE_LIBCURL # runtime
 
 if BR2_PACKAGE_ZABBIX_SERVER
 
 choice
-	prompt "zabbix server database backend"
-	default BR2_PACKAGE_ZABBIX_SERVER_POSTGRESQL
-	help
-	  Select database backend for zabbix server
+	prompt "server database backend"
 
 config BR2_PACKAGE_ZABBIX_SERVER_MYSQL
-	bool "Use mysql support"
-	select BR2_PACKAGE_MYSQL
-	select BR2_PACKAGE_ORACLE_MYSQL
-	select BR2_PACKAGE_ORACLE_MYSQL_SERVER
+	bool "mysql"
+	depends on BR2_PACKAGE_MYSQL
 
 config BR2_PACKAGE_ZABBIX_SERVER_POSTGRESQL
-	bool "Use postgresql support"
-	select BR2_PACKAGE_POSTGRESQL
-	select BR2_PACKAGE_PHP_EXT_PGSQL
+	bool "postgresql"
+	depends on BR2_PACKAGE_POSTGRESQL
 
 endchoice
 
+
+if BR2_PACKAGE_ZABBIX_SERVER_POSTGRESQL || BR2_PACKAGE_ZABBIX_SERVER_MYSQL
+config BR2_PACKAGE_ZABBIX_SERVER_COPY_DUMPS
+	bool "install sql dumps"
+	help
+	 Copy inicitial database dumps to /usr/zabbix/
 endif
 
-config BR2_PACKAGE_ZABBIX_CLIENT
-	bool "zabbix client"
+if (!BR2_PACKAGE_PHP || (!BR2_PACKAGE_PHP_EXT_MYSQLI && !BR2_PACKAGE_PHP_EXT_PGSQL) || \
+	!BR2_PACKAGE_PHP_EXT_MBSTRING || !BR2_PACKAGE_PHP_EXT_BCMATH || \
+	!BR2_PACKAGE_PHP_EXT_SOCKETS || !BR2_PACKAGE_PHP_EXT_GD || \
+	!BR2_PACKAGE_PHP_EXT_LIBXML2 || !BR2_PACKAGE_PHP_EXT_CTYPE || \
+	!BR2_PACKAGE_PHP_EXT_SESSION || !BR2_PACKAGE_PHP_EXT_XMLREADER || \
+	!BR2_PACKAGE_PHP_EXT_XMLWRITER )
+comment "zabbix-frontend need php with extensions(bc,sockets,"
+comment "mbstring,gd,libxml2,ctype,session, xmlreader,xmlwriter, mysql or postgresql"
+endif
+
+config BR2_PACKAGE_ZABBIX_SERVER_COPY_FRONTEND
+	bool "copy php-frontend to target"
+	depends on BR2_PACKAGE_PHP
+	depends on BR2_PACKAGE_PHP_EXT_MYSQLI || BR2_PACKAGE_PHP_EXT_PGSQL
+	depends on BR2_PACKAGE_PHP_EXT_BCMATH
+	depends on BR2_PACKAGE_PHP_EXT_SOCKETS
+	depends on BR2_PACKAGE_PHP_EXT_MBSTRING
+	depends on BR2_PACKAGE_PHP_EXT_GD
+	depends on BR2_PACKAGE_PHP_EXT_LIBXML2
+	depends on BR2_PACKAGE_PHP_EXT_CTYPE
+	depends on BR2_PACKAGE_PHP_EXT_SESSION
+	depends on BR2_PACKAGE_PHP_EXT_XMLREADER
+	depends on BR2_PACKAGE_PHP_EXT_XMLWRITER
+	help
+	 copy web-frontend to /usr/zabbix/php-frontend
+endif
+
 endif
