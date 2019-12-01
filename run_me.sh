@@ -8,7 +8,7 @@ else
 fi
 
 
-exclude_files='overlay ramdisk README.md run_me.sh .git buildroot-20*tar.gz \. '
+exclude_files='overlay utils ramdisk .gitignore LICENSE README.md run_me.sh .git buildroot-20*tar.gz \. '
 find_cmd=""
 for exclude in $exclude_files
 do
@@ -49,15 +49,23 @@ if [ ${#defconfigs_array[@]} -gt 0 ]; then
         let index=${index}+1
     done
 
-    read -p "Select defconfig, press A for abort. Default [0]" answer
-    echo $answer
-    if [ "x$answer" == "xA" ]
-    then
-        exit 1
-    elif [ "x$answer" == "x" ]
-    then
-        answer=0
+    if [ "x$2" != "x" ]; then
+        answer=$2
+    else
+        read -p "Select defconfig, press A for abort. Default [0]" answer
+        echo $answer
+        if [ "x$answer" == "xA" ]
+        then
+            exit 1
+        elif [ "x$answer" == "x" ]
+        then
+            answer=0
+        fi
     fi
+fi
+
+if [ $answer -ge ${#defconfigs_array[@]} ]; then
+    exit 22
 fi
 
 for patch_name in `find $patch_dir/ -iname *.diff|sort`
