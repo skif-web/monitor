@@ -71,5 +71,4 @@ do
     else
         print_error
     fi
-    break
 done
