@@ -62,13 +62,16 @@ while true
 do
     bash $git_dir/run_me.sh $board_number
     if [ $? -gt 0 ]; then break; fi
-    let board_number=${board_number}+1
-    
+        
     board_name=`grep BR2_DEFCONFIG $buildroot_dir/.config| awk -F\/ '{print $NF}'|awk -F_ '{print $2}'`
 
     echo board_number=$board_name
     echo board_number=$board_number
+
+    let board_number=${board_number}+1
+    
     cd $buildroot_dir && make 
+    
     if [ $? -eq 0 ]
     then
         move_images

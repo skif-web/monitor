@@ -1,6 +1,6 @@
 #!/bin/bash
 clear
-set -e
+# set -e
 if [ "x$1" != "x" ]; then
 	board_num=$1
 fi
