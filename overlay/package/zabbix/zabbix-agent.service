@@ -4,13 +4,12 @@ After=network.target
  
 [Service]
 Type=forking
-User=zabbix
-Group=zabbix
-RuntimeDirectory=zabbix
-RuntimeDirectoryMode=0755
-PIDFile=/run/zabbix/zabbix_agentd.pid
 ExecStart=/usr/sbin/zabbix_agentd
 ExecReload=/usr/sbin/zabbix_agentd -R config_cache_reload
+RuntimeDirectory=zabbix
+PIDFile=/run/zabbix/zabbix_agentd.pid
+User=zabbix
+Group=zabbix
 WatchdogSec=30s
 Restart=on-failure
 

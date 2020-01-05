@@ -16,7 +16,12 @@ Using the buildroot build system allows you to create customized solutions that 
 It is a firmware packaged in a single sdcard.img file. Enough dd utility to fill it on the media.
 During loading, file access is expanded, services are downloaded. As a result, you can get a hardware-software monitoring complex that can be ported to the desired architecture.
 
-##Thermal control
+## Download
+[Current version 1.0b:] (https://github.com/skif-web/monitor/releases/tag/1.0b)
+
+[All releases:] (https://github.com/skif-web/monitor/releases)
+
+## Thermal control
 System can monitor temperature with RODOS 5 (https://silines.ru/rodos-5s)
 If device inserted in USB-port, you can monitor temperature by zabbix. To do this, you shoud create new data item in Zabbix:
 
@@ -26,7 +31,7 @@ If device inserted in USB-port, you can monitor temperature by zabbix. To do thi
 - Type- numeric
 - Units - C
 - New upplication - server Room Temp
-
+- 
 ## Build instructions
 1. Clone git
 ```bash
@@ -142,6 +147,6 @@ remove bootloader from build-im emmc( https://www.erdahl.io/2016/12/beaglebone-b
 
 ### QEMU x86_64
 
-qemu-system-x86_64 -smp 4 -m 4026M -enable-kvm -machine q35,accel=kvm -device intel-iommu -cpu host -net nic -net bridge,br=bridge0 -device virtio-scsi-pci,id=scsi0 -drive file=output/images/qemu.qcow2,format=qcow2,aio=threads -device virtio-scsi-pci,id=scsi0 -drive file=output/images/data.qcow2,format=qcow2,aio=threads
+qemu-system-x86_64 -smp 4 -m 4026M -enable-kvm -machine q35,accel=kvm -device intel-iommu -cpu host -net nic -net user,hostfwd=tcp::5555-:80,hostfwd=tcp::4444-:22 -device virtio-scsi-pci,id=scsi0 -drive file=output/images/qemu.qcow2,format=qcow2,aio=threads   -device virtio-scsi-pci,id=scsi1 -drive file=output/images/external.qcow2,format=qcow2,aio=threads
 
-This command will run system with 4 cpu, 2048 RAM, enabled KVM, virtio-net device bridged to real NIC and 2 hdd drive: sdcard with system+configs and second (external) for postgresql files.
+This command will run system with 4 cpu, 4096 RAM, enabled KVM, virtio-net device (with port from 127.0.0.1 forwarding 5555 to web-interface and 4444 to ssh ) and 2 hdd drive: sdcard with system+configs and second (external) for postgresql files.

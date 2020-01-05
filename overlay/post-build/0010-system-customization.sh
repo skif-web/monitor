@@ -8,7 +8,7 @@
 
 # rename default config 
 if [ -f  ${TARGET_DIR}/etc/systemd/network/dhcp.network ]; then
-    mv ${TARGET_DIR}/etc/systemd/network/dhcp.network ${TARGET_DIR/}/etc/systemd/network/wired.network
+    mv ${TARGET_DIR}/etc/systemd/network/dhcp.network ${TARGET_DIR}/etc/systemd/network/wired.network
 fi
 
 #########################################################
@@ -142,6 +142,19 @@ global \$DB;
 
 \$IMAGE_FORMAT_DEFAULT = IMAGE_FORMAT_PNG;
 EOF
+
+#########################################################
+#
+# zabbix 
+#
+#########################################################
+
+# allow access to RODOS-usb device
+echo 'SUBSYSTEM=="usb", ATTR{idVendor}=="20a0", ATTR{idProduct}=="4173", MODE="0666"' > ${TARGET_DIR}/etc/udev/rules.d/zabbix-rodos.rules
+# add zabbix-agent user parametr for rodos usb-termometr
+sed -i -e '/UserParameter=rodos,*/d' ${TARGET_DIR}/etc/zabbix_agentd.conf
+echo "UserParameter=rodos,rodos.sh" >> ${TARGET_DIR}/etc/zabbix_agentd.conf
+
 #########################################################
 #
 # disable some services autorun (for debug)

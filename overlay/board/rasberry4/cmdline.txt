@@ -1,0 +1,1 @@
+rootwait net.ifnames=0 quiet loglevel=3

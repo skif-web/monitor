@@ -2,7 +2,7 @@
 [Unit]
 Description=monitor prepare system
 After=postgresql.service settings_restore.service
-Before=zabbix-server.service zabbix-agent.service
+Before=zabbix-server.service zabbix-agent.service lighttpd.service
 
 [Service]
 Type=oneshot

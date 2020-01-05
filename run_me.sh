@@ -1,14 +1,12 @@
 #!/bin/bash
 clear
 set -e
-if [ "x$1" == "x" ]; then
-	function="start"
-else
-	function=$1
+if [ "x$1" != "x" ]; then
+	board_num=$1
 fi
 
 
-exclude_files='overlay ramdisk README.md run_me.sh .git buildroot-20*tar.gz \. '
+exclude_files='overlay _config.yml ramdisk README.md run_me.sh .git buildroot-20*tar.gz \. '
 find_cmd=""
 for exclude in $exclude_files
 do
@@ -48,8 +46,11 @@ if [ ${#defconfigs_array[@]} -gt 0 ]; then
         echo [$index] $defconfig
         let index=${index}+1
     done
-
-    read -p "Select defconfig, press A for abort. Default [0]" answer
+    if [ "x$board_num" == "x" ]; then
+        read -p "Select defconfig, press A for abort. Default [0]" answer
+    else
+        answer=$board_num
+    fi
     echo $answer
     if [ "x$answer" == "xA" ]
     then
@@ -59,6 +60,8 @@ if [ ${#defconfigs_array[@]} -gt 0 ]; then
         answer=0
     fi
 fi
+
+
 
 for patch_name in `find $patch_dir/ -iname *.diff|sort`
 do

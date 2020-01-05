@@ -53,6 +53,7 @@
                             
                             $status = shell_exec("sudo -u root /usr/bin/libWebInterface.sh f_update");
                             echo "<pre>$status</pre>";
+                            shell_exec("sudo -u root /usr/bin/libWebInterface.sh f_clean_upload");
                         }
                         ?>
                         <hr>
