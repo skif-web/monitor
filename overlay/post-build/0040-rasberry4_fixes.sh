@@ -2,11 +2,12 @@
 
 ##################################################
 #
-# Rasberry pi 4 fixes
+# description: Rasberry pi 4 fixes
+# params: not avaible
 #
 ##################################################
 
-grep -q 'my_rasberry4_defconfig' .config
+grep -q 'my_rasberry-4_defconfig' .config
 if [ $? -ne 0 ]; then
     exit 0
 fi
