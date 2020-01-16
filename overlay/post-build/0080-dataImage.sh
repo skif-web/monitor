@@ -1,10 +1,15 @@
 #!/bin/sh
 
+##################################################
+#
+# description: create data-volume images
+# params: not avaible
+#
+##################################################
+
 DATADIR="${BINARIES_DIR}/data"
 rm -rf $DATADIR
 mkdir -p $DATADIR
-
-cp ${TARGET_DIR}/etc/settingsDefault.txt $DATADIR/
 
 echo overlay=${BR2_EXTERNAL_monitorOverlay_PATH}
 
@@ -20,4 +25,5 @@ genimage \
     --outputpath "${BINARIES_DIR}" \
     --config "${GENIMAGE_CFG}"
 
+# For QEMU x86_64 create second volume
 grep -q 'BR2_x86_64=y' .config &&  qemu-img create -f qcow2 ${BINARIES_DIR}/external.qcow2 10G
