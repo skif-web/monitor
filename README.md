@@ -7,7 +7,7 @@ Used build-system is Buildroot.
 
 Build for admins, who need zabbix without big work.
 
-Cross-platform, can work in some ARM singe-board computers such asus tinker board and beaglebone black. Also avaible qemu_x86_64.
+Cross-platform, can work in some ARM singe-board computers such rasberri pi 4,asus tinker board and beaglebone black. Also avaible qemu_x86_64.
 
 System can monitoring temperature by external USB-thermometr(see Thermal control part)
 
@@ -42,7 +42,7 @@ git clone git@github.com:skif-web/monitor.git
 cd monitor
 ./run_me.sh
 ```
-3. Go to extracted directory
+3. Go to extracted directory. Warning!Dirname depends on buildroot version
 cd buildroot-2019.05/
 4. build image
 ```bash
@@ -50,12 +50,12 @@ make
 ```
 5. Write image do drive:
 ```bash
-dd if=output/images/sdcard.img of=/dev/sdb && sync
+dd if=output/images/sdcard.img of=/dev/${your_sdcard_device} && sync
 ```
 ## Work instructions
 
 1. boot from writed drive
-2. wait for "Ready to work" issue
+2. wait for "Ready to work" message on display (tty1)
 3. work
 
 ## Impotant things
@@ -145,8 +145,11 @@ Hold down the USER/BOOT button and apply power
 OR 
 remove bootloader from build-im emmc( https://www.erdahl.io/2016/12/beaglebone-black-booting-from-sd-by.html )
 
+### Rasberry pi 4 board
+Always boot from miscosd card
+
 ### QEMU x86_64
 
 qemu-system-x86_64 -smp 4 -m 4026M -enable-kvm -machine q35,accel=kvm -device intel-iommu -cpu host -net nic -net user,hostfwd=tcp::5555-:80,hostfwd=tcp::4444-:22 -device virtio-scsi-pci,id=scsi0 -drive file=output/images/qemu.qcow2,format=qcow2,aio=threads   -device virtio-scsi-pci,id=scsi1 -drive file=output/images/external.qcow2,format=qcow2,aio=threads
 
-This command will run system with 4 cpu, 4096 RAM, enabled KVM, virtio-net device (with port from 127.0.0.1 forwarding 5555 to web-interface and 4444 to ssh ) and 2 hdd drive: sdcard with system+configs and second (external) for postgresql files.
+This command will run system with 4 cpu, 4096 RAM, enabled KVM, virtio-net device (with port from 127.0.0.1 forwarding 5555 to web-interface and 4444 to ssh ) and 2 hdd drive: volume with system+configs and second (external) for postgresql files.
