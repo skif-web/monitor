@@ -1,4 +1,12 @@
 #!/bin/bash --login
+
+##################################################
+#
+# description: prepare system to boot
+# params: not avaible
+#
+##################################################
+
 source /etc/profile.d/monitorVariables.sh 
 source $MY_LIB
 
