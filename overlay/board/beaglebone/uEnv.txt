@@ -2,5 +2,5 @@ bootpart=0:1
 devtype=mmc
 bootdir=
 bootfile=zImage
-set_bootargs=setenv bootargs console=tty1 rw rootwait quiet loglevel=3 
+set_bootargs=setenv bootargs net.ifnames=0 quiet loglevel=3 rd.systemd.show_status=auto rd.udev.log_priority=0
 uenvcmd=run set_bootargs;run loadimage;run loadfdt;printenv bootargs;bootz ${loadaddr} - ${fdtaddr}

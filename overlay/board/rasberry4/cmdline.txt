@@ -1,1 +1,1 @@
-rootwait net.ifnames=0 quiet loglevel=3
+net.ifnames=0 quiet loglevel=3 rd.systemd.show_status=auto rd.udev.log_priority=0
