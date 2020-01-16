@@ -18,7 +18,6 @@ BR2_ROOTFS_OVERLAY="$(BR2_EXTERNAL_monitorOverlay_PATH)/rootfs_overlay/"
 BR2_ROOTFS_POST_BUILD_SCRIPT="$(BR2_EXTERNAL_monitorOverlay_PATH)/post-build.sh"
 BR2_ROOTFS_POST_IMAGE_SCRIPT="$(BR2_EXTERNAL_monitorOverlay_PATH)/board/beaglebone/sdcard.sh"
 BR2_LINUX_KERNEL=y
-BR2_LINUX_KERNEL_CUSTOM_LOGO_PATH="$(BR2_EXTERNAL_monitorOverlay_PATH)/logo_kernel.png"
 BR2_LINUX_KERNEL_USE_CUSTOM_CONFIG=y
 BR2_LINUX_KERNEL_CUSTOM_CONFIG_FILE="$(BR2_EXTERNAL_monitorOverlay_PATH)/board/beaglebone/linux_defconfig"
 BR2_LINUX_KERNEL_DTS_SUPPORT=y
