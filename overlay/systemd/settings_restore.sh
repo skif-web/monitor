@@ -1,4 +1,13 @@
 #!/bin/bash --login
+
+##################################################
+#
+# description: restore systems settings from settings file
+#   also prepare data volumes
+# params: not avaible
+#
+##################################################
+
 source /etc/profile.d/monitorVariables.sh 
 source $MY_LIB
 
