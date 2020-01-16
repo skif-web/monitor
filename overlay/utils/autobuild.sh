@@ -70,6 +70,7 @@ do
 
     let board_number=${board_number}+1
     
+    # go to ready buildroot-dir and make
     cd $buildroot_dir && make 
     
     if [ $? -eq 0 ]
@@ -77,5 +78,6 @@ do
         move_images
     else
         print_error
+        exit 1
     fi
 done
