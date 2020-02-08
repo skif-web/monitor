@@ -16,7 +16,7 @@ clear
 # set -e
 
 # build in ramdisk
-USE_RAMDISK=y
+USE_RAMDISK=n
 RAMDISK_SIZE=16G
 
 if [ "x$1" != "x" ]; then
