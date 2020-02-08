@@ -1,5 +1,5 @@
 #!/bin/sh
-
+set -x
 ##################################################
 #
 # description: create data-volume images
@@ -26,4 +26,8 @@ genimage \
     --config "${GENIMAGE_CFG}"
 
 # For QEMU x86_64 create second volume
-grep -q 'BR2_x86_64=y' .config &&  qemu-img create -f qcow2 ${BINARIES_DIR}/external.qcow2 10G
+is_qemu=`grep 'BR2_x86_64=y' .config `
+if [ "x$is_qemu" != "x" ]; then
+	qemu-img create -f qcow2 ${BINARIES_DIR}/external.qcow2 10G
+fi
+
